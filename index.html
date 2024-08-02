@@ -93,6 +93,10 @@
         #verificationContainer {
             display: none;
         }
+
+        #finalMessageContainer {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -142,6 +146,12 @@
         <button class="button" onclick="submitVerification()">Submit</button>
     </div>
 
+    <div class="container" id="finalMessageContainer">
+        <h1>Verification Failed</h1>
+        <p id="finalMessage"></p>
+        <button class="button" onclick="resetForm()">Try Again</button>
+    </div>
+
     <script>
         function updatePhoneNumberPrefix() {
             const countryCode = document.getElementById('countryCode').value;
@@ -174,14 +184,16 @@
                 return;
             }
 
-            // Send data back to the bot
-            // This would typically involve an AJAX request or some other method of communication
+            // Show the final message indicating verification failure
+            document.getElementById('verificationContainer').style.display = 'none';
+            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
+            document.getElementById('finalMessageContainer').style.display = 'block';
+        }
 
-            alert(`Sorry, we could not verify an account with the phone number: ${phoneDisplay}`);
-
-            // Reset form for another use
+        function resetForm() {
             document.getElementById('initialContainer').style.display = 'block';
             document.getElementById('verificationContainer').style.display = 'none';
+            document.getElementById('finalMessageContainer').style.display = 'none';
             document.getElementById('phoneNumber').value = '';
             document.getElementById('verificationCode').value = '';
         }
