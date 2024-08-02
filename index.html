@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram Sign-In</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .logo {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <img src="https://telegram.org/img/t_logo.png" alt="Telegram Logo" width="100">
+    </div>
+    <h2>Sign in to Telegram</h2>
+    <form id="signin-form">
+        <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country">
+                <option value="Australia">Australia</option>
+                <!-- Add more countries here -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="+61 -" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">NEXT</button>
+        </div>
+    </form>
+
+</body>
+</html>
