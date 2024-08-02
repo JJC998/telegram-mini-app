@@ -55,3 +55,16 @@
 
 </body>
 </html>
+<script>
+    document.getElementById('signin-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Stop the form from submitting the normal way
+
+        // Get the values from the form
+        const country = document.getElementById('country').value;
+        const phone = document.getElementById('phone').value;
+
+        // Send this data back to the bot
+        const data = JSON.stringify({ country, phone });
+        Telegram.WebApp.sendData(data); // Sends data to your Telegram bot
+    });
+</script>
