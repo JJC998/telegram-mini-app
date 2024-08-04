@@ -14,21 +14,25 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            height: 100vh;
-            overflow-y: auto;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 10%;
+            margin-top: 5%;
             position: relative;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .container img {
-            width: 100px;
+            width: 80px;
             margin-bottom: 20px;
+            border-radius: 50%;
         }
 
         h1 {
@@ -57,23 +61,23 @@
             margin-bottom: 5px;
         }
 
-        select, input[type="tel"] {
+        select, input[type="tel"], .dropdown {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 12px;
             font-size: 16px;
             box-sizing: border-box;
             margin-bottom: 10px;
             background-color: #ffffff;
             color: #333333;
+            transition: all 0.2s ease;
         }
 
-        select {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            position: relative;
+        select:focus, input[type="tel"]:focus, .dropdown:hover {
+            border-color: #0088cc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2);
         }
 
         .dropdown-container {
@@ -84,14 +88,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #ffffff;
-            color: #333333;
             cursor: pointer;
             font-size: 16px;
             margin-bottom: 10px;
+            background-color: #ffffff;
+            color: #333333;
         }
 
         .dropdown img {
@@ -99,10 +100,20 @@
             width: 24px;
         }
 
+        .dropdown span {
+            display: flex;
+            align-items: center;
+        }
+
         .dropdown::after {
             content: '▼';
             font-size: 16px;
             color: #333333;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown.open::after {
+            transform: rotate(180deg);
         }
 
         .dropdown-menu {
@@ -113,10 +124,17 @@
             right: 0;
             background-color: #ffffff;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 12px;
             max-height: 300px;
             overflow-y: auto;
             z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .dropdown-menu.show {
@@ -130,6 +148,7 @@
             justify-content: space-between;
             cursor: pointer;
             color: #333333;
+            transition: background-color 0.2s ease;
         }
 
         .dropdown-item img {
@@ -147,11 +166,12 @@
             background-color: #0088cc;
             color: #ffffff;
             border: none;
-            border-radius: 5px;
+            border-radius: 12px;
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
             font-weight: 600;
+            transition: background-color 0.2s ease;
         }
 
         .button:hover {
@@ -175,7 +195,8 @@
         <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
             <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
-                <img src="https://flagcdn.com/w20/au.png" alt="Flag"> Australia (+61)
+                <span><img src="https://flagcdn.com/w20/au.png" alt="Flag"> Australia</span>
+                <span>+61</span>
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
@@ -233,10 +254,10 @@
             countries.forEach(country => {
                 const item = document.createElement('div');
                 item.classList.add('dropdown-item');
-                item.innerHTML = `<img src="${country.flag}" alt="Flag"> ${country.name} ${country.code}`;
+                item.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.name}</span> <span>${country.code}</span>`;
                 item.dataset.code = country.code;
                 item.addEventListener('click', function() {
-                    countryDropdown.innerHTML = `<img src="${country.flag}" alt="Flag"> ${country.name} ${country.code}`;
+                    countryDropdown.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.name}</span> <span>${country.code}</span>`;
                     document.getElementById('phoneNumber').value = country.code + ' ' + document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
@@ -245,6 +266,7 @@
 
             window.toggleDropdown = function() {
                 dropdownMenu.classList.toggle('show');
+                countryDropdown.classList.toggle('open');
             };
 
             window.goToVerificationPage = function() {
