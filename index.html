@@ -7,25 +7,29 @@
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #ffffff; /* Changed to white background */
+            background-color: #ffffff; /* Ensure the background is white */
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: auto; /* Ensure page is scrollable on mobile */
+            overflow: hidden; /* Prevent body overflow */
         }
 
         .container {
-            background-color: #ffffff;
+            background-color: #ffffff; /* Match the body background */
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
+            border-radius: 0; /* Remove border radius */
             text-align: center;
             width: 100%;
             max-width: 400px;
-            box-sizing: border-box;
+            position: absolute; /* Position absolutely to control placement */
+            top: 10%; /* Adjust vertical position */
+            left: 50%;
+            transform: translateX(-50%);
+            height: calc(100vh - 20px); /* Fill most of the viewport height */
+            overflow-y: auto; /* Allow scrolling if needed */
         }
 
         .container img {
@@ -67,13 +71,6 @@
             margin-bottom: 10px;
         }
 
-        select {
-            appearance: none; /* Remove default styles */
-            -webkit-appearance: none; /* Remove default styles on iOS */
-            background: #ffffff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><path d="M0 0l5 5 5-5H0z" fill="#aaa"/></svg>') no-repeat right center;
-            background-size: 10px;
-        }
-
         input[type="checkbox"] {
             margin-right: 10px;
         }
@@ -88,7 +85,6 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
-            transition: background-color 0.3s ease; /* Smooth hover effect */
         }
 
         .button:hover {
@@ -129,7 +125,7 @@
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" placeholder="Phone Number" inputmode="numeric">
+            <input type="text" id="phoneNumber" placeholder="Phone Number">
         </div>
 
         <div>
@@ -146,7 +142,7 @@
 
         <div class="input-group">
             <label for="verificationCode">Code</label>
-            <input type="number" id="verificationCode" placeholder="Code" inputmode="numeric">
+            <input type="number" id="verificationCode" placeholder="Code">
         </div>
 
         <button class="button" onclick="submitVerification()">Submit</button>
