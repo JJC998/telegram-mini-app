@@ -24,7 +24,7 @@
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 20px;
+            margin-top: 30%;
         }
 
         .container img {
@@ -145,85 +145,30 @@
         <div class="input-group">
             <label for="countryCode">Country</label>
             <select id="countryCode" onchange="updatePhoneNumberPrefix()">
-    <option value="" disabled selected hidden>Select your country</option>
-    <option value="+1" data-flag="🇺🇸">United States</option>
-    <option value="+44" data-flag="🇬🇧">United Kingdom</option>
-    <option value="+61" data-flag="🇦🇺">Australia</option>
-    <option value="+49" data-flag="🇩🇪">Germany</option>
-    <option value="+33" data-flag="🇫🇷">France</option>
-    <option value="+81" data-flag="🇯🇵">Japan</option>
-    <option value="+91" data-flag="🇮🇳">India</option>
-    <option value="+86" data-flag="🇨🇳">China</option>
-    <option value="+7" data-flag="🇷🇺">Russia</option>
-    <option value="+82" data-flag="🇰🇷">South Korea</option>
-    <option value="+55" data-flag="🇧🇷">Brazil</option>
-    <option value="+27" data-flag="🇿🇦">South Africa</option>
-    <option value="+60" data-flag="🇲🇾">Malaysia</option>
-    <option value="+65" data-flag="🇸🇬">Singapore</option>
-    <option value="+34" data-flag="🇪🇸">Spain</option>
-    <option value="+39" data-flag="🇮🇹">Italy</option>
-    <option value="+52" data-flag="🇲🇽">Mexico</option>
-    <option value="+92" data-flag="🇵🇰">Pakistan</option>
-    <option value="+91" data-flag="🇮🇳">India</option>
-    <option value="+91" data-flag="🇮🇳">India</option>
-    <option value="+33" data-flag="🇫🇷">France</option>
-    <option value="+44" data-flag="🇬🇧">United Kingdom</option>
-    <option value="+1" data-flag="🇺🇸">United States</option>
-    <option value="+61" data-flag="🇦🇺">Australia</option>
-    <option value="+7" data-flag="🇷🇺">Russia</option>
-    <option value="+81" data-flag="🇯🇵">Japan</option>
-    <option value="+55" data-flag="🇧🇷">Brazil</option>
-    <option value="+49" data-flag="🇩🇪">Germany</option>
-    <option value="+34" data-flag="🇪🇸">Spain</option>
-    <option value="+82" data-flag="🇰🇷">South Korea</option>
-    <option value="+27" data-flag="🇿🇦">South Africa</option>
-    <option value="+60" data-flag="🇲🇾">Malaysia</option>
-    <option value="+65" data-flag="🇸🇬">Singapore</option>
-    <option value="+98" data-flag="🇮🇷">Iran</option>
-    <option value="+90" data-flag="🇹🇷">Turkey</option>
-    <option value="+34" data-flag="🇪🇸">Spain</option>
-    <option value="+31" data-flag="🇳🇱">Netherlands</option>
-    <option value="+32" data-flag="🇧🇪">Belgium</option>
-    <option value="+41" data-flag="🇨🇭">Switzerland</option>
-    <option value="+43" data-flag="🇦🇹">Austria</option>
-    <option value="+46" data-flag="🇸🇪">Sweden</option>
-    <option value="+47" data-flag="🇳🇴">Norway</option>
-    <option value="+48" data-flag="🇵🇱">Poland</option>
-    <option value="+54" data-flag="🇦🇷">Argentina</option>
-    <option value="+56" data-flag="🇨🇱">Chile</option>
-    <option value="+57" data-flag="🇨🇴">Colombia</option>
-    <option value="+58" data-flag="🇻🇪">Venezuela</option>
-    <option value="+60" data-flag="🇲🇾">Malaysia</option>
-    <option value="+63" data-flag="🇵🇭">Philippines</option>
-    <option value="+65" data-flag="🇸🇬">Singapore</option>
-    <option value="+66" data-flag="🇹🇭">Thailand</option>
-    <option value="+67" data-flag="🇲🇭">Marshall Islands</option>
-    <option value="+68" data-flag="🇲🇻">Maldives</option>
-    <option value="+80" data-flag="🇹🇲">Turkmenistan</option>
-    <option value="+81" data-flag="🇯🇵">Japan</option>
-    <option value="+82" data-flag="🇰🇷">South Korea</option>
-    <option value="+84" data-flag="🇻🇳">Vietnam</option>
-    <option value="+850" data-flag="🇰🇵">North Korea</option>
-    <option value="+852" data-flag="🇭🇰">Hong Kong</option>
-    <option value="+853" data-flag="🇲🇴">Macau</option>
-    <option value="+855" data-flag="🇲🇲">Myanmar</option>
-    <option value="+856" data-flag="🇱🇦">Laos</option>
-    <option value="+880" data-flag="🇧🇩">Bangladesh</option>
-    <option value="+886" data-flag="🇹🇼">Taiwan</option>
-    <option value="+960" data-flag="🇲🇻">Maldives</option>
-    <option value="+961" data-flag="🇱🇧">Lebanon</option>
-    <option value="+962" data-flag="🇯🇴">Jordan</option>
-    <option value="+963" data-flag="🇸🇾">Syria</option>
-    <option value="+964" data-flag="🇮🇶">Iraq</option>
-    <option value="+965" data-flag="🇰🇼">Kuwait</option>
-    <option value="+966" data-flag="🇸🇦">Saudi Arabia</option>
-    <option value="+967" data-flag="🇾🇪">Yemen</option>
-    <option value="+968" data-flag="🇴🇲">Oman</option>
-    <option value="+970" data-flag="🇵🇸">Palestine</option>
-    <option value="+971" data-flag="🇦🇪">United Arab Emirates</option>
-    <option value="+972" data-flag="🇮🇱">Israel</option>
-    <option value="+973" data-flag="🇧🇭">Bahrain</option>
-    <option value="+974" data-flag="🇶🇦">Qatar</option>
+                <option value="" disabled selected hidden></option>
+                <option value="+1">🇺🇸 United States</option>
+                <option value="+44">🇬🇧 United Kingdom</option>
+                <option value="+61">🇦🇺 Australia</option>
+                <option value="+33">🇫🇷 France</option>
+                <option value="+49">🇩🇪 Germany</option>
+                <option value="+34">🇪🇸 Spain</option>
+                <option value="+39">🇮🇹 Italy</option>
+                <option value="+81">🇯🇵 Japan</option>
+                <option value="+91">🇮🇳 India</option>
+                <option value="+86">🇨🇳 China</option>
+                <option value="+7">🇷🇺 Russia</option>
+                <option value="+82">🇰🇷 South Korea</option>
+                <option value="+55">🇧🇷 Brazil</option>
+                <option value="+27">🇿🇦 South Africa</option>
+                <option value="+60">🇲🇾 Malaysia</option>
+                <option value="+65">🇸🇬 Singapore</option>
+                <option value="+41">🇨🇭 Switzerland</option>
+                <option value="+31">🇳🇱 Netherlands</option>
+                <option value="+48">🇵🇱 Poland</option>
+                <option value="+20">🇪🇬 Egypt</option>
+                <option value="+98">🇮🇷 Iran</option>
+                <option value="+90">🇹🇷 Turkey</option>
+                <option value="+62">🇮🇩 Indonesia</option>
             </select>
         </div>
 
@@ -319,16 +264,17 @@
 
             // Show the final message indicating verification failure
             document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('finalMessage').textContent = `Sorry, we could not verify an account with the phone number: ${phoneDisplay}`;
             document.getElementById('finalMessageContainer').style.display = 'block';
+            document.getElementById('finalMessage').textContent = 'The verification code is incorrect or has expired.';
         }
 
         function resetForm() {
+            document.getElementById('countryCode').value = '';
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('verificationCode').value = '';
             document.getElementById('initialContainer').style.display = 'block';
             document.getElementById('verificationContainer').style.display = 'none';
             document.getElementById('finalMessageContainer').style.display = 'none';
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('verificationCode').value = '';
         }
     </script>
 </body>
