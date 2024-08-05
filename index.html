@@ -14,58 +14,60 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #111827; /* Dark background color for the initial page */
+            background-color: #111827;
             overflow: hidden;
         }
 
         .verification-container {
             text-align: center;
             background-color: #1F2937;
-            border-radius: 12px;
-            padding: 30px 20px;
+            padding: 60px 20px; /* Adjusted to move the text higher */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
         }
 
         .verification-container h1 {
-            font-size: 28px;
+            font-size: 32px; /* Larger font size */
             color: #FFFFFF;
             margin-bottom: 10px;
             font-weight: 600;
         }
 
         .verification-container p {
-            font-size: 16px;
+            font-size: 18px; /* Larger font size */
             color: #E5E7EB;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .verification-container button {
-            font-size: 16px;
+            font-size: 20px; /* Larger font size */
             font-weight: 600;
             color: #FFFFFF;
-            background-color: #16A34A;
+            background-color: #10B981;
             border: none;
             border-radius: 8px;
-            padding: 10px 20px;
+            padding: 15px 40px; /* Larger button size */
             cursor: pointer;
             transition: background-color 0.3s;
         }
 
         .verification-container button:hover {
-            background-color: #14532D;
+            background-color: #059669;
         }
 
         .container {
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 4%;
+            margin-top: 5%; /* Adjusted by 1 cm */
             position: relative;
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: none;
-            background-color: #ffffff; /* White background for the verification part */
+            background-color: #ffffff;
+            height: calc(100vh - 10cm); /* Adjust height to fit within screen */
+            overflow-y: scroll; /* Make container scrollable */
         }
 
         .container img {
