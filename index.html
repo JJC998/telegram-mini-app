@@ -98,12 +98,6 @@
             border-radius: 12px;
         }
 
-        .dropdown img {
-            width: 30px;
-            height: 20px; /* Rectangular flags */
-            object-fit: cover;
-        }
-
         .dropdown span {
             display: flex;
             align-items: center;
@@ -111,9 +105,18 @@
             width: 100%;
         }
 
-        .dropdown span .country-code {
-            margin-left: auto; /* Push country code to the right */
+        .dropdown .flag {
+            margin-right: 10px;
+        }
+
+        .dropdown .country-name {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .dropdown .country-code {
             font-weight: bold;
+            text-align: right;
         }
 
         .dropdown::after {
@@ -227,7 +230,7 @@
         <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
             <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
-                <span>🇦🇺 Australia</span> <span class="country-code">+61</span>
+                <span><span class="flag"></span><span class="country-name"></span> <span class="country-code"></span></span>
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
@@ -269,6 +272,9 @@
             const countryDropdown = document.getElementById('countryCode');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const phoneNumberInput = document.getElementById('phoneNumber');
+            const flagSpan = countryDropdown.querySelector('.flag');
+            const countryNameSpan = countryDropdown.querySelector('.country-name');
+            const countryCodeSpan = countryDropdown.querySelector('.country-code');
 
             const countries = [
                 { name: 'Australia', code: '+61', flag: '🇦🇺' },
@@ -285,8 +291,12 @@
                 item.classList.add('dropdown-item');
                 item.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
                 item.dataset.code = country.code;
+                item.dataset.flag = country.flag;
+                item.dataset.name = country.name;
                 item.addEventListener('click', function() {
-                    countryDropdown.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
+                    flagSpan.textContent = country.flag;
+                    countryNameSpan.textContent = country.name;
+                    countryCodeSpan.textContent = country.code;
                     phoneNumberInput.value = country.code + ' ' + phoneNumberInput.value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
