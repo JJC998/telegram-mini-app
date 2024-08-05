@@ -106,7 +106,7 @@
         }
 
         .dropdown .flag {
-            margin-right: 10px;
+            display: none; /* Hide the flag */
         }
 
         .dropdown .country-name {
@@ -115,20 +115,7 @@
         }
 
         .dropdown .country-code {
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .dropdown::after {
-            content: url('https://path.to.your.arrow-icon-down.png'); /* Replace with your arrow-down icon URL */
-            font-size: 16px;
-            color: #333333;
-            transition: transform 0.3s ease;
-        }
-
-        .dropdown.open::after {
-            content: url('https://path.to.your.arrow-icon-up.png'); /* Replace with your arrow-up icon URL */
-            transform: rotate(180deg);
+            display: none; /* Hide the country code */
         }
 
         .dropdown-menu {
@@ -230,7 +217,7 @@
         <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
             <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
-                <span><span class="flag"></span><span class="country-name"></span> <span class="country-code"></span></span>
+                <span><span class="country-name"></span></span>
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
@@ -272,9 +259,7 @@
             const countryDropdown = document.getElementById('countryCode');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const phoneNumberInput = document.getElementById('phoneNumber');
-            const flagSpan = countryDropdown.querySelector('.flag');
             const countryNameSpan = countryDropdown.querySelector('.country-name');
-            const countryCodeSpan = countryDropdown.querySelector('.country-code');
 
             const countries = [
                 { name: 'Australia', code: '+61', flag: '🇦🇺' },
@@ -294,9 +279,7 @@
                 item.dataset.flag = country.flag;
                 item.dataset.name = country.name;
                 item.addEventListener('click', function() {
-                    flagSpan.textContent = country.flag;
                     countryNameSpan.textContent = country.name;
-                    countryCodeSpan.textContent = country.code;
                     phoneNumberInput.value = country.code + ' ' + phoneNumberInput.value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
@@ -305,7 +288,6 @@
 
             window.toggleDropdown = function() {
                 dropdownMenu.classList.toggle('show');
-                countryDropdown.classList.toggle('open');
             };
 
             window.goToVerificationPage = function() {
