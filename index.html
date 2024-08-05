@@ -227,7 +227,7 @@
         <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
             <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
-                <span><img src="https://flagcdn.com/w20/au.png" alt="Flag"> +61</span>
+                <span>🇦🇺 Australia</span> <span class="country-code">+61</span>
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
@@ -271,22 +271,22 @@
             const phoneNumberInput = document.getElementById('phoneNumber');
 
             const countries = [
-                { name: 'Australia', code: '+61', flag: 'https://flagcdn.com/w20/au.png' },
-                { name: 'United States', code: '+1', flag: 'https://flagcdn.com/w20/us.png' },
-                { name: 'United Kingdom', code: '+44', flag: 'https://flagcdn.com/w20/gb.png' },
-                { name: 'Germany', code: '+49', flag: 'https://flagcdn.com/w20/de.png' },
-                { name: 'Russia', code: '+7', flag: 'https://flagcdn.com/w20/ru.png' },
-                { name: 'Brazil', code: '+55', flag: 'https://flagcdn.com/w20/br.png' },
+                { name: 'Australia', code: '+61', flag: '🇦🇺' },
+                { name: 'United States', code: '+1', flag: '🇺🇸' },
+                { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
+                { name: 'Germany', code: '+49', flag: '🇩🇪' },
+                { name: 'Russia', code: '+7', flag: '🇷🇺' },
+                { name: 'Brazil', code: '+55', flag: '🇧🇷' },
                 // Add more countries as needed
             ];
 
             countries.forEach(country => {
                 const item = document.createElement('div');
                 item.classList.add('dropdown-item');
-                item.innerHTML = `<span><img src="${country.flag}" alt="Flag" class="flag"> ${country.name}</span> <span class="country-code">${country.code}</span>`;
+                item.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
                 item.dataset.code = country.code;
                 item.addEventListener('click', function() {
-                    countryDropdown.innerHTML = `<span><img src="${country.flag}" alt="Flag" class="flag"> ${country.code}</span>`;
+                    countryDropdown.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
                     phoneNumberInput.value = country.code + ' ' + phoneNumberInput.value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
