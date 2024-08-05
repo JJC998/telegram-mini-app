@@ -281,7 +281,7 @@
                 item.dataset.name = country.name;
                 item.addEventListener('click', function() {
                     countryNameSpan.textContent = country.name;
-                    phoneNumberInput.value = country.code; // Add the country code to the phone number input
+                    phoneNumberInput.value = country.code + ' '; // Add the country code with a space
                     dropdownMenu.classList.remove('show');
                 });
                 dropdownMenu.appendChild(item);
