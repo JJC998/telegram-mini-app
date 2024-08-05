@@ -96,7 +96,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 12px;
-            height: 42px; /* Reverted to the original height */
+            height: 42px;
         }
 
         .dropdown span {
@@ -281,7 +281,7 @@
                 item.dataset.name = country.name;
                 item.addEventListener('click', function() {
                     countryNameSpan.textContent = country.name;
-                    phoneNumberInput.value = country.code + ' ' + phoneNumberInput.value.replace(/^\+\d+\s*/, '');
+                    phoneNumberInput.value = ''; // Clear the phone number input
                     dropdownMenu.classList.remove('show');
                 });
                 dropdownMenu.appendChild(item);
@@ -298,6 +298,13 @@
                     return;
                 }
 
+                // Simulating a successful submission
+                document.getElementById('phoneDisplay').textContent = phoneNumber;
+                document.getElementById('initialContainer').style.display = 'none';
+                document.getElementById('verificationContainer').style.display = 'block';
+                
+                // Uncomment and adjust the following code for actual backend integration
+                /*
                 fetch('http://localhost:8000/', {
                     method: 'POST',
                     headers: {
@@ -316,6 +323,7 @@
                     console.error('Error:', error);
                     alert('Error submitting phone number.');
                 });
+                */
             };
 
             window.submitVerification = function() {
@@ -325,6 +333,12 @@
                     return;
                 }
 
+                // Simulating a successful verification
+                document.getElementById('verificationContainer').style.display = 'none';
+                document.getElementById('finalMessageContainer').style.display = 'block';
+                
+                // Uncomment and adjust the following code for actual backend integration
+                /*
                 fetch('http://localhost:8000/verify', {
                     method: 'POST',
                     headers: {
@@ -342,6 +356,7 @@
                     console.error('Error:', error);
                     document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
                 });
+                */
             };
 
             window.resetForm = function() {
