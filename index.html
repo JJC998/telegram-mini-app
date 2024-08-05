@@ -93,20 +93,27 @@
             margin-bottom: 10px;
             background-color: #ffffff;
             color: #333333;
-            padding-right: 35px; /* Space for the arrow icon */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
         }
 
         .dropdown img {
-            margin-right: 10px;
             width: 30px;
-            height: 20px; /* Make flags rectangular */
+            height: 20px; /* Rectangular flags */
             object-fit: cover;
         }
 
         .dropdown span {
             display: flex;
             align-items: center;
-            justify-content: flex-end; /* Aligns the code to the right */
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .dropdown span .country-code {
+            margin-left: auto; /* Push country code to the right */
+            font-weight: bold;
         }
 
         .dropdown::after {
@@ -114,8 +121,6 @@
             font-size: 16px;
             color: #333333;
             transition: transform 0.3s ease;
-            position: absolute;
-            right: 10px; /* Position the arrow icon */
         }
 
         .dropdown.open::after {
@@ -156,13 +161,31 @@
             cursor: pointer;
             color: #333333;
             transition: background-color 0.2s ease;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
 
         .dropdown-item img {
-            margin-right: 10px;
             width: 30px;
-            height: 20px; /* Make flags rectangular */
+            height: 20px; /* Rectangular flags */
             object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .dropdown-item span {
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item span .country-name {
+            margin-right: 10px; /* Space between country name and code */
+        }
+
+        .dropdown-item span .country-code {
+            font-weight: bold;
         }
 
         .dropdown-item:hover {
@@ -252,10 +275,6 @@
                 { name: 'United States', code: '+1', flag: 'https://flagcdn.com/w20/us.png' },
                 { name: 'United Kingdom', code: '+44', flag: 'https://flagcdn.com/w20/gb.png' },
                 { name: 'Germany', code: '+49', flag: 'https://flagcdn.com/w20/de.png' },
-                { name: 'France', code: '+33', flag: 'https://flagcdn.com/w20/fr.png' },
-                { name: 'Japan', code: '+81', flag: 'https://flagcdn.com/w20/jp.png' },
-                { name: 'India', code: '+91', flag: 'https://flagcdn.com/w20/in.png' },
-                { name: 'China', code: '+86', flag: 'https://flagcdn.com/w20/cn.png' },
                 { name: 'Russia', code: '+7', flag: 'https://flagcdn.com/w20/ru.png' },
                 { name: 'Brazil', code: '+55', flag: 'https://flagcdn.com/w20/br.png' },
                 // Add more countries as needed
@@ -264,10 +283,10 @@
             countries.forEach(country => {
                 const item = document.createElement('div');
                 item.classList.add('dropdown-item');
-                item.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.code}</span> <span>${country.name}</span>`;
+                item.innerHTML = `<span><img src="${country.flag}" alt="Flag" class="flag"> ${country.name}</span> <span class="country-code">${country.code}</span>`;
                 item.dataset.code = country.code;
                 item.addEventListener('click', function() {
-                    countryDropdown.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.code}</span>`;
+                    countryDropdown.innerHTML = `<span><img src="${country.flag}" alt="Flag" class="flag"> ${country.code}</span>`;
                     phoneNumberInput.value = country.code + ' ' + phoneNumberInput.value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
