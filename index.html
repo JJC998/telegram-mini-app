@@ -93,16 +93,20 @@
             margin-bottom: 10px;
             background-color: #ffffff;
             color: #333333;
+            padding-right: 35px; /* Space for the arrow icon */
         }
 
         .dropdown img {
             margin-right: 10px;
-            width: 24px;
+            width: 30px;
+            height: 20px; /* Make flags rectangular */
+            object-fit: cover;
         }
 
         .dropdown span {
             display: flex;
             align-items: center;
+            justify-content: flex-end; /* Aligns the code to the right */
         }
 
         .dropdown::after {
@@ -110,6 +114,8 @@
             font-size: 16px;
             color: #333333;
             transition: transform 0.3s ease;
+            position: absolute;
+            right: 10px; /* Position the arrow icon */
         }
 
         .dropdown.open::after {
@@ -154,7 +160,9 @@
 
         .dropdown-item img {
             margin-right: 10px;
-            width: 24px;
+            width: 30px;
+            height: 20px; /* Make flags rectangular */
+            object-fit: cover;
         }
 
         .dropdown-item:hover {
@@ -196,8 +204,7 @@
         <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
             <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
-                <span><img src="https://flagcdn.com/w20/au.png" alt="Flag"> Australia</span>
-                <span>+61</span>
+                <span><img src="https://flagcdn.com/w20/au.png" alt="Flag"> +61</span>
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
@@ -250,17 +257,17 @@
                 { name: 'India', code: '+91', flag: 'https://flagcdn.com/w20/in.png' },
                 { name: 'China', code: '+86', flag: 'https://flagcdn.com/w20/cn.png' },
                 { name: 'Russia', code: '+7', flag: 'https://flagcdn.com/w20/ru.png' },
-                { name: 'South Korea', code: '+82', flag: 'https://flagcdn.com/w20/kr.png' },
+                { name: 'Brazil', code: '+55', flag: 'https://flagcdn.com/w20/br.png' },
                 // Add more countries as needed
             ];
 
             countries.forEach(country => {
                 const item = document.createElement('div');
                 item.classList.add('dropdown-item');
-                item.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.name}</span> <span>${country.code}</span>`;
+                item.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.code}</span> <span>${country.name}</span>`;
                 item.dataset.code = country.code;
                 item.addEventListener('click', function() {
-                    countryDropdown.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.name}</span> <span>${country.code}</span>`;
+                    countryDropdown.innerHTML = `<span><img src="${country.flag}" alt="Flag"> ${country.code}</span>`;
                     phoneNumberInput.value = country.code + ' ' + phoneNumberInput.value.replace(/^\+\d+\s*/, '');
                     dropdownMenu.classList.remove('show');
                 });
