@@ -12,7 +12,7 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Aligns content to the top */
             height: 100vh;
             background-color: #111827;
             overflow: hidden;
@@ -20,7 +20,7 @@
 
         .verification-container {
             text-align: center;
-            padding-top: 100px; /* Pushes the content higher */
+            padding-top: 20px; /* Moves the content higher */
             background-color: #111827; /* Background color same as body to blend in */
             width: 100%;
             max-width: 500px;
@@ -70,7 +70,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: none;
             background-color: #ffffff;
-            height: calc(100vh - 10cm); /* Adjust height to fit within screen */
+            height: calc(100vh - 6cm); /* Make the verification container longer */
             overflow-y: scroll; /* Make container scrollable */
         }
 
@@ -281,7 +281,7 @@
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="tel" id="phoneNumber" inputmode="numeric" pattern="[0-9]*" placeholder="Phone Number">
+            <input type="tel" id="phoneNumber" inputmode="numeric" pattern="[0-9]*" placeholder="Phone Number" onfocus="scrollAwayKeyboard()">
         </div>
 
         <div>
@@ -429,6 +429,10 @@
                 document.getElementById('finalMessageContainer').style.display = 'none';
                 document.getElementById('initialContainer').style.display = 'block';
             };
+
+            window.scrollAwayKeyboard = function() {
+                window.scrollTo(0, 0); // Scroll to the top when input is focused to hide the keyboard
+            }
         });
     </script>
 </body>
