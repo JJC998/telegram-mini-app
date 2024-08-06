@@ -24,6 +24,8 @@
             background-color: #111827;
             width: 100%;
             max-width: 500px;
+            position: absolute;
+            top: 2cm; /* Adjusted by 2 cm */
         }
 
         .verification-container h1 {
@@ -251,14 +253,14 @@
 
         @media (max-width: 600px) {
             .verification-container {
-                margin-top: 2cm;
+                margin-top: 2cm; /* Move verification container 2cm from top on mobile */
             }
 
             .container {
                 width: 95%;
                 max-width: 340px;
-                height: calc(100vh - 4cm);
-                margin-top: 0;
+                height: calc(100vh - 4cm); /* Adjust height on mobile */
+                margin-top: 0; /* Adjust margin for full-screen fit */
             }
 
             .verification-container button {
@@ -289,7 +291,7 @@
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="tel" id="phoneNumber" inputmode="numeric" pattern="[0-9]*" placeholder="Phone Number" onfocus="scrollAwayKeyboard()">
+            <input type="tel" id="phoneNumber" inputmode="numeric" pattern="[0-9]*" placeholder="Phone Number">
         </div>
 
         <div>
@@ -307,7 +309,7 @@
 
         <div class="input-group">
             <label for="verificationCode">Code</label>
-            <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code" onfocus="hideVerificationImage()">
+            <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code">
         </div>
 
         <button class="button" onclick="submitVerification()">Submit</button>
@@ -324,6 +326,7 @@
             const countryDropdown = document.getElementById('countryCode');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const phoneNumberInput = document.getElementById('phoneNumber');
+            const verificationContainer = document.getElementById('initialContainer');
             const countryNameSpan = countryDropdown.querySelector('.country-name');
 
             const countries = [
@@ -393,15 +396,11 @@
                 document.getElementById('initialContainer').style.display = 'block';
             };
 
-            window.scrollAwayKeyboard = function() {
-                document.activeElement.blur();
-            }
-
-            window.hideVerificationImage = function() {
-                document.getElementById('verificationImage').classList.add('hide-image');
-            }
-
             document.body.addEventListener('touchmove', function() {
+                document.activeElement.blur();
+            });
+
+            verificationContainer.addEventListener('scroll', function() {
                 document.activeElement.blur();
             });
         });
