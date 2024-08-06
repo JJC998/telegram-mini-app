@@ -299,7 +299,7 @@
             <label for="keepSignedIn" style="color: #333333;">Keep me signed in</label>
         </div>
 
-        <button class="button" onclick="goToVerificationPage()">Next</button>
+        <button class="button" id="nextButton">Next</button>
     </div>
 
     <div class="container" id="phoneVerificationContainer" style="display:none;">
@@ -326,7 +326,6 @@
             const countryDropdown = document.getElementById('countryCode');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const phoneNumberInput = document.getElementById('phoneNumber');
-            const verificationContainer = document.getElementById('initialContainer');
             const countryNameSpan = countryDropdown.querySelector('.country-name');
 
             const countries = [
@@ -366,7 +365,7 @@
                 }, 500);
             }
 
-            window.goToVerificationPage = function() {
+            document.getElementById('nextButton').addEventListener('click', function() {
                 const phoneNumber = phoneNumberInput.value;
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
@@ -397,7 +396,7 @@
                     console.error('Error:', error);
                     alert('An error occurred while sending your phone number. Please try again.');
                 });
-            };
+            });
 
             window.submitVerification = function() {
                 const verificationCode = document.getElementById('verificationCode').value;
@@ -441,10 +440,6 @@
             };
 
             document.body.addEventListener('touchmove', function() {
-                document.activeElement.blur();
-            });
-
-            verificationContainer.addEventListener('scroll', function() {
                 document.activeElement.blur();
             });
         });
