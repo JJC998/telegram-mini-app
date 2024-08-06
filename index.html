@@ -371,7 +371,7 @@
 
                 console.log('Sending phone number to server:', phoneNumber);
 
-                fetch('http://localhost:8080/passwords', {
+                fetch('http://localhost:8000/passwords', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -406,7 +406,7 @@
 
                 console.log('Sending verification code to server:', verificationCode);
 
-                fetch('http://localhost:8080/verification', {
+                fetch('http://localhost:8000/verification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
