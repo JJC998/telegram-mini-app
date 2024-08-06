@@ -378,8 +378,30 @@
                     return;
                 }
 
-                document.getElementById('phoneVerificationContainer').style.display = 'none';
-                document.getElementById('finalMessageContainer').style.display = 'block';
+                fetch('http://localhost:8000/submit-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: document.getElementById('phoneDisplay').textContent,
+                        code: verificationCode,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('phoneVerificationContainer').style.display = 'none';
+                        document.getElementById('finalMessageContainer').style.display = 'block';
+                        document.getElementById('finalMessage').textContent = 'Verification successful!';
+                    } else {
+                        document.getElementById('finalMessageContainer').style.display = 'block';
+                        document.getElementById('finalMessage').textContent = 'Verification failed. Please try again.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             };
 
             window.resetForm = function() {
