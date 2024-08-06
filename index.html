@@ -309,7 +309,7 @@
     </div>
 
     <div class="container" id="finalMessageContainer" style="display:none;">
-        <h1>Verification Failed</h1>
+        <h1>Verification Status</h1>
         <p id="finalMessage"></p>
         <button class="button" onclick="resetForm()">Try Again</button>
     </div>
@@ -390,7 +390,12 @@
                         code: verificationCode,
                     }),
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         document.getElementById('phoneVerificationContainer').style.display = 'none';
@@ -403,11 +408,13 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    document.getElementById('finalMessageContainer').style.display = 'block';
+                    document.getElementById('finalMessage').textContent = 'An error occurred. Please try again.';
                 });
             };
 
             window.resetForm = function() {
-                phoneNumberInput.value = '';
+                document.getElementById('phoneNumber').value = '';
                 document.getElementById('verificationCode').value = '';
                 document.getElementById('finalMessageContainer').style.display = 'none';
                 document.getElementById('initialContainer').style.display = 'block';
