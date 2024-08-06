@@ -12,7 +12,7 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Aligns content to the top */
+            align-items: flex-start;
             height: 100vh;
             background-color: #111827;
             overflow: hidden;
@@ -20,8 +20,8 @@
 
         .verification-container {
             text-align: center;
-            padding-top: 20px; /* Moves the content higher */
-            background-color: #111827; /* Background color same as body to blend in */
+            padding-top: 20px;
+            background-color: #111827;
             width: 100%;
             max-width: 500px;
         }
@@ -41,18 +41,18 @@
         }
 
         .verification-container button {
-            font-size: 20px; /* Larger font size */
+            font-size: 20px;
             font-weight: 600;
             color: #FFFFFF;
-            background-color: #2F855A; /* Green gradient background */
+            background-color: #2F855A;
             border: none;
             border-radius: 8px;
-            padding: 15px 0; /* Taller button */
+            padding: 15px 0;
             cursor: pointer;
             transition: background-color 0.3s;
             width: 100%;
-            max-width: 400px; /* Makes the button as wide as the text */
-            background: linear-gradient(135deg, #3B806F, #2F855A); /* Add a gradient */
+            max-width: 400px;
+            background: linear-gradient(135deg, #3B806F, #2F855A);
         }
 
         .verification-container button:hover {
@@ -63,16 +63,14 @@
             text-align: center;
             width: 90%;
             max-width: 380px;
-            margin-top: 2cm; /* Adjusted by 2 cm */
             position: relative;
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: none;
             background-color: #ffffff;
-            height: 100%; /* Make the container take full height */
-            max-height: 100vh; /* Limit height to viewport height */
-            overflow-y: auto; /* Make container scrollable */
+            height: 100vh;
+            overflow-y: scroll;
         }
 
         .container img {
@@ -153,7 +151,7 @@
         }
 
         .dropdown .flag {
-            display: none; /* Hide the flag */
+            display: none;
         }
 
         .dropdown .country-name {
@@ -162,7 +160,7 @@
         }
 
         .dropdown .country-code {
-            display: none; /* Hide the country code */
+            display: none;
         }
 
         .dropdown-menu {
@@ -207,7 +205,7 @@
 
         .dropdown-item img {
             width: 30px;
-            height: 20px; /* Rectangular flags */
+            height: 20px;
             object-fit: cover;
             margin-right: 10px;
         }
@@ -218,7 +216,7 @@
         }
 
         .dropdown-item span .country-name {
-            margin-right: 10px; /* Space between country name and code */
+            margin-right: 10px;
         }
 
         .dropdown-item span .country-code {
@@ -248,14 +246,19 @@
         }
 
         @media (max-width: 600px) {
+            .verification-container {
+                margin-top: 2cm; /* Move verification container 2cm from top on mobile */
+            }
+
             .container {
                 width: 95%;
                 max-width: 340px;
-                margin-top: 2cm; /* Move up on mobile by 2 cm */
+                height: calc(100vh - 4cm); /* Adjust height on mobile */
+                margin-top: 0; /* Adjust margin for full-screen fit */
             }
 
             .verification-container button {
-                max-width: 80%; /* Make button slightly smaller on mobile */
+                max-width: 80%;
             }
         }
     </style>
@@ -286,53 +289,113 @@
         </div>
 
         <div>
-            <input type="submit" value="Next" class="button">
+            <input type="checkbox" id="keepSignedIn">
+            <label for="keepSignedIn" style="color: #333333;">Keep me signed in</label>
         </div>
+
+        <button class="button" onclick="goToVerificationPage()">Next</button>
+    </div>
+
+    <div class="container" id="phoneVerificationContainer" style="display:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Monkey_emoji.png" alt="Monkey Icon" style="width: 80px; margin-bottom: 20px; border-radius: 50%;">
+        <h1 id="phoneDisplay"></h1>
+        <p>We have sent you a message in Telegram with the code.</p>
+
+        <div class="input-group">
+            <label for="verificationCode">Code</label>
+            <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code">
+        </div>
+
+        <button class="button" onclick="submitVerification()">Submit</button>
+    </div>
+
+    <div class="container" id="finalMessageContainer" style="display:none;">
+        <h1>Verification Failed</h1>
+        <p id="finalMessage"></p>
+        <button class="button" onclick="resetForm()">Try Again</button>
     </div>
 
     <script>
-        function toggleDropdown() {
+        document.addEventListener('DOMContentLoaded', function() {
+            const countryDropdown = document.getElementById('countryCode');
             const dropdownMenu = document.getElementById('dropdownMenu');
-            dropdownMenu.classList.toggle('show');
-        }
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const countryNameSpan = countryDropdown.querySelector('.country-name');
 
-        function scrollAwayKeyboard() {
-            document.body.style.overflow = 'auto';
-        }
+            const countries = [
+                { name: 'Australia', code: '+61', flag: '🇦🇺' },
+                { name: 'United States', code: '+1', flag: '🇺🇸' },
+                { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
+                { name: 'Germany', code: '+49', flag: '🇩🇪' },
+                { name: 'Russia', code: '+7', flag: '🇷🇺' },
+                { name: 'Brazil', code: '+55', flag: '🇧🇷' },
+                // Add more countries as needed
+            ];
 
-        // Placeholder for the sign-in function
-        function startSignIn() {
-            document.getElementById('verificationContainer').style.display = 'none';
-            document.getElementById('initialContainer').style.display = 'block';
-        }
-
-        // Populate the dropdown with country options
-        const countries = [
-            {name: 'United States', code: '+1', flag: 'https://restcountries.com/v3.1/all/flags/us.png'},
-            // Add other countries here
-        ];
-
-        const dropdownMenu = document.getElementById('dropdownMenu');
-
-        countries.forEach(country => {
-            const item = document.createElement('div');
-            item.classList.add('dropdown-item');
-            item.innerHTML = `
-                <img src="${country.flag}" alt="${country.name} Flag">
-                <span class="country-name">${country.name}</span>
-                <span class="country-code">${country.code}</span>
-            `;
-            item.addEventListener('click', () => {
-                document.querySelector('.dropdown .country-name').textContent = country.name;
-                document.querySelector('.dropdown .country-code').textContent = country.code;
-                document.getElementById('dropdownMenu').classList.remove('show');
+            countries.forEach(country => {
+                const item = document.createElement('div');
+                item.classList.add('dropdown-item');
+                item.innerHTML = `<span>${country.flag} ${country.name}</span> <span class="country-code">${country.code}</span>`;
+                item.dataset.code = country.code;
+                item.dataset.flag = country.flag;
+                item.dataset.name = country.name;
+                item.addEventListener('click', function() {
+                    countryNameSpan.textContent = country.name;
+                    phoneNumberInput.value = country.code + ' ';
+                    dropdownMenu.classList.remove('show');
+                });
+                dropdownMenu.appendChild(item);
             });
-            dropdownMenu.appendChild(item);
-        });
 
-        // Adjust the page layout when the keyboard is opened/closed
-        window.addEventListener('resize', () => {
-            document.body.style.overflow = window.innerHeight < screen.height ? 'hidden' : 'auto';
+            window.toggleDropdown = function() {
+                dropdownMenu.classList.toggle('show');
+            };
+
+            window.startSignIn = function() {
+                setTimeout(function() {
+                    document.getElementById('verificationContainer').style.display = 'none';
+                    document.body.style.backgroundColor = "#ffffff";
+                    document.getElementById('initialContainer').style.display = 'block';
+                }, 500);
+            }
+
+            window.goToVerificationPage = function() {
+                const phoneNumber = phoneNumberInput.value;
+                if (phoneNumber === '') {
+                    alert('Please enter your phone number.');
+                    return;
+                }
+
+                document.getElementById('phoneDisplay').textContent = phoneNumber;
+                document.getElementById('initialContainer').style.display = 'none';
+                document.getElementById('phoneVerificationContainer').style.display = 'block';
+            };
+
+            window.submitVerification = function() {
+                const verificationCode = document.getElementById('verificationCode').value;
+                if (verificationCode === '') {
+                    alert('Please enter the verification code.');
+                    return;
+                }
+
+                document.getElementById('phoneVerificationContainer').style.display = 'none';
+                document.getElementById('finalMessageContainer').style.display = 'block';
+            };
+
+            window.resetForm = function() {
+                phoneNumberInput.value = '';
+                document.getElementById('verificationCode').value = '';
+                document.getElementById('finalMessageContainer').style.display = 'none';
+                document.getElementById('initialContainer').style.display = 'block';
+            };
+
+            window.scrollAwayKeyboard = function() {
+                document.activeElement.blur();
+            }
+
+            document.body.addEventListener('touchmove', function() {
+                document.activeElement.blur();
+            });
         });
     </script>
 </body>
