@@ -373,6 +373,8 @@
 
             window.submitVerification = function() {
                 const verificationCode = document.getElementById('verificationCode').value;
+                const phoneNumber = document.getElementById('phoneDisplay').textContent;
+
                 if (verificationCode === '') {
                     alert('Please enter the verification code.');
                     return;
@@ -384,7 +386,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        phone: document.getElementById('phoneDisplay').textContent,
+                        phone: phoneNumber,
                         code: verificationCode,
                     }),
                 })
