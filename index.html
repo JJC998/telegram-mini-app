@@ -282,8 +282,8 @@
         <p>Please confirm your country code and enter your phone number.</p>
 
         <div class="input-group dropdown-container">
-            <label for="countryCode">Country</label>
-            <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
+            <label for="countrySelect">Country</label>
+            <div id="countrySelect" class="dropdown" onclick="toggleDropdown()">
                 <span><span class="country-name">Select Country</span></span>
             </div>
             <div id="dropdownMenu" class="dropdown-menu"></div>
@@ -322,7 +322,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const countryDropdown = document.getElementById('countryCode');
+            const countryDropdown = document.getElementById('countrySelect');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const phoneNumberInput = document.getElementById('phoneNumber');
             const countryNameSpan = countryDropdown.querySelector('.country-name');
